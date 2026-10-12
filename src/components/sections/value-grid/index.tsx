@@ -201,92 +201,108 @@ export function ValueMark({ image, pending }: { image: StaticImageData | null; p
  *
  * A Server Component. The cards' hover and focus states are CSS.
  */
-export function ValueGrid({
+export function ValueGrid({ spacing, snap = false, ...props }: ValueGridProps) {
+  return (
+    <Section
+      background={GROUND[props.ground ?? 'dark'].section}
+      spacing={spacing ?? (snap ? 'tight' : 'default')}
+      data-snap-section
+      // An outlined card's hover gradient (ui/background-gradient.tsx)
+      // reaches past the card, and past the viewport's edge on a phone — a
+      // horizontal scroll even while it is invisible. `clip`, not `hidden`,
+      // so the bloom above and below is left alone.
+      className={cn(
+        props.variant === 'outlined' && 'overflow-x-clip',
+        snap && 'flex min-h-viewport snap-start items-center',
+      )}
+    >
+      <ValueGridLayout {...props} />
+    </Section>
+  );
+}
+
+/** {@link ValueGrid}'s own props, less the two that belong to its section. */
+export type ValueGridLayoutProps = Omit<ValueGridProps, 'spacing' | 'snap'>;
+
+/**
+ * The heading and the cards, without the `<Section>` around them.
+ *
+ * Exported so `<DownloadsProwess>` can set the prowess cards under the
+ * product downloads in one section (Module Manufacturing, 2026-10-12). A
+ * section around it that draws `outlined` cards needs `overflow-x-clip`, as
+ * {@link ValueGrid}'s own does. Everything documented on {@link ValueGrid}
+ * applies here.
+ */
+export function ValueGridLayout({
   eyebrow,
   title,
   titleGradient,
   items,
   columns = 'default',
-  spacing,
   accent = false,
   variant = 'hairline',
   balance = false,
   ground = 'dark',
-  snap = false,
-}: ValueGridProps) {
+}: ValueGridLayoutProps) {
   const outlined = variant === 'outlined';
   const tone = GROUND[ground];
 
   return (
-    <Section
-      background={tone.section}
-      spacing={spacing ?? (snap ? 'tight' : 'default')}
-      // An outlined card's hover gradient (ui/background-gradient.tsx)
-      // reaches past the card, and past the viewport's edge on a phone — a
-      // horizontal scroll even while it is invisible. `clip`, not `hidden`,
-      // so the bloom above and below is left alone.
-      data-snap-section
-      className={cn(
-        outlined && 'overflow-x-clip',
-        snap && 'flex min-h-viewport snap-start items-center',
-      )}
-    >
-      <div className="flex w-full flex-col gap-flow">
-        <div className="flex flex-col gap-stack">
-          {eyebrow !== undefined && (
-            <Reveal order={0}>
-              <Eyebrow tone={tone.eyebrow}>{eyebrow}</Eyebrow>
-            </Reveal>
-          )}
-
-          <Reveal order={eyebrow === undefined ? 0 : 1}>
-            <DisplayHeading ground={ground} business={titleGradient}>
-              {title}
-            </DisplayHeading>
+    <div className="flex w-full flex-col gap-flow">
+      <div className="flex flex-col gap-stack">
+        {eyebrow !== undefined && (
+          <Reveal order={0}>
+            <Eyebrow tone={tone.eyebrow}>{eyebrow}</Eyebrow>
           </Reveal>
-        </div>
+        )}
 
-        <Reveal order={2}>
-          <div
-            className={cn(
-              'gap-x-gap-grid gap-y-flow',
-              balance ? 'flex flex-wrap justify-center' : ['grid', COLUMNS_CLASS[columns]],
-            )}
-          >
-            {items.map((item) => (
-              <Card
-                key={item.name ?? item.ordinal ?? item.body}
-                as="article"
-                ground={ground}
-                shape={variant}
-                inset={outlined ? 'none' : 'top'}
-                accentClassName={
-                  accent && !outlined ? 'bg-(image:--gradient-eyebrow-bright)' : undefined
-                }
-                className={cn(
-                  balance && ['grow', BASIS_CLASS[columns], 'max-w-(--value-grid-card-max)'],
-                )}
-              >
-                <div
-                  className={cn(
-                    'flex w-full flex-col gap-tight',
-                    outlined && 'items-center gap-stack text-center',
-                  )}
-                >
-                  {item.mark}
-                  {item.ordinal !== undefined && (
-                    <p className={cn('text-meta uppercase', tone.ordinal)}>{item.ordinal}</p>
-                  )}
-                  {item.name !== undefined && (
-                    <h3 className={cn('text-h3', tone.name)}>{item.name}</h3>
-                  )}
-                  <p className={cn('text-body-sm text-pretty', tone.body)}>{item.body}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
+        <Reveal order={eyebrow === undefined ? 0 : 1}>
+          <DisplayHeading ground={ground} business={titleGradient}>
+            {title}
+          </DisplayHeading>
         </Reveal>
       </div>
-    </Section>
+
+      <Reveal order={2}>
+        <div
+          className={cn(
+            'gap-x-gap-grid gap-y-flow',
+            balance ? 'flex flex-wrap justify-center' : ['grid', COLUMNS_CLASS[columns]],
+          )}
+        >
+          {items.map((item) => (
+            <Card
+              key={item.name ?? item.ordinal ?? item.body}
+              as="article"
+              ground={ground}
+              shape={variant}
+              inset={outlined ? 'none' : 'top'}
+              accentClassName={
+                accent && !outlined ? 'bg-(image:--gradient-eyebrow-bright)' : undefined
+              }
+              className={cn(
+                balance && ['grow', BASIS_CLASS[columns], 'max-w-(--value-grid-card-max)'],
+              )}
+            >
+              <div
+                className={cn(
+                  'flex w-full flex-col gap-tight',
+                  outlined && 'items-center gap-stack text-center',
+                )}
+              >
+                {item.mark}
+                {item.ordinal !== undefined && (
+                  <p className={cn('text-meta uppercase', tone.ordinal)}>{item.ordinal}</p>
+                )}
+                {item.name !== undefined && (
+                  <h3 className={cn('text-h3', tone.name)}>{item.name}</h3>
+                )}
+                <p className={cn('text-body-sm text-pretty', tone.body)}>{item.body}</p>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </Reveal>
+    </div>
   );
 }

@@ -33,6 +33,21 @@ Legend: `Reads` = the supporting docs to load for that item (beyond `/CLAUDE.md`
 | FE-02 | Design system foundation (tokens, fonts, primitives) | `features/02-design-system-foundation.md` | Swapnil Raj | 2026-08-04 |
 | FE-01 | Initial project setup | `features/01-initial-project-setup.md` | Swapnil Raj | 2026-08-04 |
 
+### Module Manufacturing: downloads and prowess as one section (not a tracker item), 2026-10-12
+
+At the client's request, Product Downloads and Manufacturing Prowess are one section,
+`<DownloadsProwess>`. Each had been a short screen of its own since the page started snapping.
+The datasheets come first, as on the live page, then the cards, `--spacing-section-y-tight`
+apart. Neither one's content changed. It composes `<ProductDownloadsLayout>` and
+`<ValueGridLayout>`, split out of their sections for it, as Our Key ESG Metrics'
+`<ReportingStakeholders>` composes two layouts. `<ProductDownloads>` stays, unused, for any
+business page that needs it on its own.
+
+**Verified** on a production build: the merged section fits one screen at 1920 × 1080,
+1536 × 864 and 1440 × 900 (650px of content at 1440), and stepping down lands hero, overview,
+map, this section, then the footer. At 1366 × 768 and below it is taller than the screen and
+scrolls before snapping on (+54px at 1366 × 768). Nothing scrolls sideways at 360.
+
 ### Snapping on six more pages (not a tracker item), 2026-10-11
 
 The client asked for the homepage's section snapping on Solar Energy, Module Manufacturing,

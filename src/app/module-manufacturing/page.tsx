@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
+import { DownloadsProwess } from '@/components/sections/downloads-prowess';
 import { PageHero } from '@/components/sections/page-hero';
-import { ProductDownloads } from '@/components/sections/product-downloads';
 import { ProjectsMap } from '@/components/sections/projects-map';
 import { ProseSplit } from '@/components/sections/prose-split';
-import { ValueGrid, type ValueGridItem } from '@/components/sections/value-grid';
+import type { ValueGridItem } from '@/components/sections/value-grid';
 import {
   CertificateMark,
   DataMark,
@@ -56,6 +56,10 @@ const prowessItems: ValueGridItem[] = moduleProwess.items.map((item, index) => (
  *
  * **The page snaps**, as Solar Energy does. See the note there.
  *
+ * **The datasheets and the prowess cards are one section**, the client's
+ * request of 2026-10-12: each was a short screen of its own. See
+ * `<DownloadsProwess>`.
+ *
  * A Server Component apart from the portfolio figure's count-up.
  */
 export default function ModuleManufacturingPage() {
@@ -64,12 +68,14 @@ export default function ModuleManufacturingPage() {
       <PageHero titleGradient="module" {...moduleHero} snap />
       <ProseSplit titleGradient="module" {...moduleOverview} snap />
       <ProjectsMap titleGradient="module" {...moduleProjects} sites={moduleSites} snap />
-      <ProductDownloads titleGradient="module" {...moduleDownloads} spacing="tight" snap />
-      <ValueGrid
-        titleGradient="module"
-        title={moduleProwess.title}
-        items={prowessItems}
-        variant="outlined"
+      <DownloadsProwess
+        downloads={{ titleGradient: 'module', ...moduleDownloads }}
+        prowess={{
+          titleGradient: 'module',
+          title: moduleProwess.title,
+          items: prowessItems,
+          variant: 'outlined',
+        }}
         snap
       />
     </div>

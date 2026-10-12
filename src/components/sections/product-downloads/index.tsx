@@ -65,14 +65,7 @@ export interface ProductDownloadsProps {
  *
  * A Server Component. The rows are plain links.
  */
-export function ProductDownloads({
-  eyebrow,
-  title,
-  titleGradient,
-  items,
-  spacing,
-  snap = false,
-}: ProductDownloadsProps) {
+export function ProductDownloads({ spacing, snap = false, ...props }: ProductDownloadsProps) {
   return (
     <Section
       background="black-dots"
@@ -80,41 +73,62 @@ export function ProductDownloads({
       data-snap-section
       className={cn(snap && 'flex min-h-viewport snap-start items-center')}
     >
-      <div
-        className={cn(
-          'flex w-full flex-col gap-flow',
-          'lg:grid lg:grid-cols-[1fr_2fr] lg:items-start lg:gap-x-ledger-col-gap',
-        )}
-      >
-        <div className="flex flex-col gap-stack">
-          {eyebrow !== undefined && (
-            <Reveal order={0}>
-              <Eyebrow tone="bright">{eyebrow}</Eyebrow>
-            </Reveal>
-          )}
+      <ProductDownloadsLayout {...props} />
+    </Section>
+  );
+}
 
-          <Reveal order={eyebrow === undefined ? 0 : 1}>
-            <DisplayHeading ground="dark" business={titleGradient}>
-              {title}
-            </DisplayHeading>
+/** {@link ProductDownloads}' own props, less the two that belong to its section. */
+export type ProductDownloadsLayoutProps = Omit<ProductDownloadsProps, 'spacing' | 'snap'>;
+
+/**
+ * The heading and the list, without the `<Section>` around them.
+ *
+ * Exported so `<DownloadsProwess>` can set it above the prowess cards in one
+ * section (Module Manufacturing, 2026-10-12). Everything documented on
+ * {@link ProductDownloads} applies here.
+ */
+export function ProductDownloadsLayout({
+  eyebrow,
+  title,
+  titleGradient,
+  items,
+}: ProductDownloadsLayoutProps) {
+  return (
+    <div
+      className={cn(
+        'flex w-full flex-col gap-flow',
+        'lg:grid lg:grid-cols-[1fr_2fr] lg:items-start lg:gap-x-ledger-col-gap',
+      )}
+    >
+      <div className="flex flex-col gap-stack">
+        {eyebrow !== undefined && (
+          <Reveal order={0}>
+            <Eyebrow tone="bright">{eyebrow}</Eyebrow>
           </Reveal>
-        </div>
+        )}
 
-        <Reveal order={2}>
-          <ul className="flex w-full flex-col">
-            {items.map((item) => (
-              <li key={item.href}>
-                <DocumentLink
-                  ground="dark"
-                  href={item.href}
-                  title={item.title}
-                  fileSize={item.fileSize}
-                />
-              </li>
-            ))}
-          </ul>
+        <Reveal order={eyebrow === undefined ? 0 : 1}>
+          <DisplayHeading ground="dark" business={titleGradient}>
+            {title}
+          </DisplayHeading>
         </Reveal>
       </div>
-    </Section>
+
+      <Reveal order={2}>
+        <ul className="flex w-full flex-col">
+          {items.map((item) => (
+            <li key={item.href}>
+              <DocumentLink
+                ground="dark"
+                href={item.href}
+                title={item.title}
+                fileSize={item.fileSize}
+              />
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+    </div>
   );
 }
