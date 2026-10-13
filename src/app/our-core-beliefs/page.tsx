@@ -7,14 +7,8 @@ import socialIcon from '@/assets/icons/our-social-impact/animated/37b-social-com
 import { EsgReportLink } from '@/app/_lib/esg-report-link';
 import { BeliefStack, type Belief } from '@/components/sections/belief-stack';
 import { PageHero } from '@/components/sections/page-hero';
-import { CollageBackdrop } from '@/components/sections/page-hero/collage-backdrop';
 import { buildMetadata } from '@/lib/seo/metadata';
-import {
-  beliefs,
-  coreBeliefsCollage,
-  coreBeliefsHero,
-  coreBeliefsMeta,
-} from '../_content/our-core-beliefs';
+import { beliefs, coreBeliefsHero, coreBeliefsMeta } from '../_content/our-core-beliefs';
 
 export const metadata: Metadata = buildMetadata({
   title: coreBeliefsMeta.title,
@@ -49,15 +43,15 @@ const beliefItems: Belief[] = beliefs.map((belief, index) => ({
 }));
 
 /**
- * Our Core Beliefs (FE-14) — a collage hero, the four beliefs as outlined
+ * Our Core Beliefs (FE-14) — a photograph hero, the four beliefs as outlined
  * cards, and the ESG Report.
  *
  * Built to `Our Core Beliefs.dc.html` (Claude Design project `6afc516d-…`,
  * 2026-10-06), read through the design MCP. Two sections:
  *
- *  - the standard `<PageHero>`, centred, with `<CollageBackdrop>` in the
- *    photograph's place — three photographs side by side in the client's
- *    `8.svg` panel shape, fading into the ground;
+ *  - the standard `<PageHero>`, centred, with one full-bleed photograph like
+ *    every other inner page — the design's three-photograph collage was
+ *    replaced on 2026-10-13, at the client's request;
  *  - `<BeliefStack>`, the four beliefs as cards with their cut-outs, icons,
  *    checklists and accents, and the ESG Report pill under the last.
  *
@@ -81,11 +75,7 @@ const beliefItems: Belief[] = beliefs.map((belief, index) => ({
 export default function OurCoreBeliefsPage() {
   return (
     <div data-snap-sections className="-mt-header lg:mt-0">
-      <PageHero
-        {...coreBeliefsHero}
-        backdrop={<CollageBackdrop images={coreBeliefsCollage} />}
-        snap
-      />
+      <PageHero {...coreBeliefsHero} snap />
       <BeliefStack beliefs={beliefItems} action={<EsgReportLink />} snap />
     </div>
   );

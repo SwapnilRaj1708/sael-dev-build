@@ -1,5 +1,4 @@
 import type { StaticImageData } from 'next/image';
-import type { ReactNode } from 'react';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { Container } from '@/components/ui/container';
 import { Eyebrow } from '@/components/ui/eyebrow';
@@ -59,15 +58,6 @@ export interface PageHeroProps {
   /** The asset's name in docs/asset-inventory.md, for the pending placeholder. */
   pending?: string;
   /**
-   * Something other than one photograph behind the copy — Our Core Beliefs'
-   * three-photograph collage, `<CollageBackdrop>`. Drawn in the photograph's
-   * place, and **it brings its own scrim**: the standard one is tuned for a
-   * single full-bleed photograph and is not drawn over a backdrop. `image`,
-   * `imageAlt`, `video` and `pending` are ignored; pass `null` and `''` for
-   * the two that are required.
-   */
-  backdrop?: ReactNode;
-  /**
    * Opt into the page's section snapping — see `data-snap-sections` in
    * globals.css. The band is already a screen tall, so this only marks it
    * as the first stop.
@@ -126,11 +116,6 @@ const HERO_TITLE_GRADIENT_CLASS: Record<BusinessGradient, string> = {
  * **`video` swaps the banner for a moving one** — added 2026-09-18 for the
  * Solar Energy hero. The photograph stays as poster and reduced-motion still.
  *
- * **`backdrop` swaps the media layer for a composition** — added 2026-10-06
- * for Our Core Beliefs' three-photograph collage, which is the same hero in
- * every other respect: the copy, its alignment and the band's height are
- * unchanged, and only what stands behind the copy differs.
- *
  * A Server Component; only `<VideoFrame>` is client, and only when used.
  */
 export function PageHero({
@@ -145,7 +130,6 @@ export function PageHero({
   align = 'start',
   titleMeasure = 'hero',
   titleGradient,
-  backdrop,
   snap = false,
 }: PageHeroProps) {
   return (
@@ -167,9 +151,7 @@ export function PageHero({
       fullBleed
     >
       <div className="relative flex min-h-(--page-hero-h) w-full max-w-full items-end overflow-hidden">
-        {backdrop !== undefined ? (
-          backdrop
-        ) : video === undefined ? (
+        {video === undefined ? (
           <MediaFrame
             image={image}
             alt={imageAlt}
@@ -190,13 +172,11 @@ export function PageHero({
         )}
 
         {/* Decorative: it carries no information, it protects the contrast of
-            the text over it. A backdrop draws its own. */}
-        {backdrop === undefined && (
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-(image:--gradient-page-hero-scrim)"
-          />
-        )}
+            the text over it. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-(image:--gradient-page-hero-scrim)"
+        />
 
         <Container
           className={cn(

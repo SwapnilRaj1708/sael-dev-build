@@ -1307,40 +1307,6 @@
    * its own (they snap), so the height is the dimension that has to fit. */
   --story-media-h: clamp(22.5rem, calc(var(--spacing-viewport) - 12rem), 40rem); /* 360 → 640 */
 
-  /* Our Core Beliefs' hero collage shape — the client-supplied `8.svg`,
-   * exported as `core-beliefs-mask.svg`: a rounded panel with one corner
-   * eased. Unlike every other mask here it is **stretched to each image's
-   * box** rather than given its own ratio, which is the design's
-   * instruction: the three columns are whatever shape the hero makes them,
-   * and the panel is drawn to fit. `preserveAspectRatio='none'` is what lets
-   * it. Consumed by sections/page-hero/collage-backdrop. */
-  --mask-belief-collage: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='173 140 222.19 228.26' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='m364.93 140h-161.67c-16.71 0-30.26 13.55-30.26 30.26v9.72 119.38 37.84c0 16.71 13.55 30.26 30.26 30.26h39.73 82.48 40.16c16.33 0 29.56-13.23 29.56-29.55v-42.1-115.83-9.72c0-16.71-13.55-30.26-30.26-30.26z'/%3E%3C/svg%3E");
-
-  /* How much of the hero the collage takes below `lg`, where the copy stands
-   * under it rather than over it — the design's 420 of a 740 frame. From
-   * `lg` it runs to the hero's foot and the scrim carries the copy. */
-  --collage-h-m: 57%;
-
-  /* The collage's scrim: clear over the top third, then down to the page's
-   * own black at the foot so the hero runs into the first card without an
-   * edge. Not --gradient-page-hero-scrim, which stops at 0.88 and leaves a
-   * seam against the ground. Below `lg` the solid part starts higher, under
-   * the copy that stands beneath the shorter collage. */
-  --gradient-collage-scrim: linear-gradient(
-    180deg,
-    rgb(8 9 12 / 0) 0%,
-    rgb(8 9 12 / 0.1) 30%,
-    rgb(8 9 12 / 0.82) 70%,
-    var(--color-surface-black) 100%
-  );
-  --gradient-collage-scrim-m: linear-gradient(
-    180deg,
-    rgb(8 9 12 / 0) 0%,
-    rgb(8 9 12 / 0.1) 30%,
-    rgb(8 9 12 / 0.85) 58%,
-    var(--color-surface-black) 70%
-  );
-
   /* The glow inside a belief card, in the card's accent. `currentColor`, so
    * one token serves all four accents: the layer that paints it takes the
    * accent as its text colour and the gradient picks it up there, where a

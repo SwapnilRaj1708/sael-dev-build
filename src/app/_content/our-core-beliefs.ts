@@ -1,7 +1,7 @@
 import type { StaticImageData } from 'next/image';
+import heroImage from '@/assets/images/hero/our-core-beliefs.webp';
 import type { Belief } from '@/components/sections/belief-stack';
 import type { PageHeroProps } from '@/components/sections/page-hero';
-import type { CollageImage } from '@/components/sections/page-hero/collage-backdrop';
 import { cdnImage } from '@/lib/assets/cdn';
 import { TODO_CONTENT } from '@/lib/config/site';
 import { GOVERNANCE_PATH } from './corporate-governance';
@@ -22,16 +22,16 @@ import { GOVERNANCE_PATH } from './corporate-governance';
  *
  * The live page's own files, in the blob container under
  * `web-assets/media/our-core-beliefs/` since 2026-10-08, renamed for where
- * each is drawn: `new-our-core-beliefs-hero-1/2/3.webp` for the collage,
- * and each belief's id for its cut-out (`obf-1.webp` is
+ * each is drawn: each belief's id for its cut-out (`obf-1.webp` is
  * `environmental-stewardship.webp`, `farmers-group.webp` is
  * `our-social-impact.webp`, and so on). Until then they were read from the
  * legacy site. Dimensions are read from the blobs themselves, and match the
  * legacy files'. See `cdnImage()`.
  *
- * **The three hero photographs are 600px wide**, and the collage draws each
- * at about 480 × 740 at 1440, so they are upscaled. Higher-resolution files
- * (1200px wide or more) are on SAEL's list.
+ * **The hero is one photograph, in the repo** (`hero/our-core-beliefs.webp`,
+ * 1672 × 941), supplied 2026-10-13 to replace the three-photograph collage so
+ * the hero matches every other inner page's. It is not yet in the blob
+ * container with the rest of the page's artwork.
  *
  * The four belief images are cut-outs on transparent grounds, fitted rather
  * than cropped. Alt text is written from the images themselves; the
@@ -55,8 +55,8 @@ export const coreBeliefsMeta = {
   description: TODO_CONTENT,
 } as const;
 
-/** The hero's copy. Its backdrop is the collage below, joined by the page. */
-export const coreBeliefsHero: Omit<PageHeroProps, 'backdrop' | 'snap'> = {
+/** The hero: the standard `<PageHero>`, one full-bleed photograph. */
+export const coreBeliefsHero: Omit<PageHeroProps, 'snap'> = {
   eyebrow: 'Sustainability',
   title: 'Our Core Beliefs',
   intro:
@@ -65,29 +65,10 @@ export const coreBeliefsHero: Omit<PageHeroProps, 'backdrop' | 'snap'> = {
   // draws none. The page jump links the live hero carries were removed at
   // the client's request.
   align: 'center',
-  // The collage stands in for the photograph; see `<PageHero backdrop>`.
-  image: null,
-  imageAlt: '',
+  image: heroImage,
+  imageAlt:
+    'Two pairs of hands holding a seedling in soil above a meadow of wildflowers at sunrise',
 };
-
-/** The hero collage, left to right. */
-export const coreBeliefsCollage: readonly CollageImage[] = [
-  {
-    image: beliefsImage('new-our-core-beliefs-hero-1.webp', 600, 545),
-    alt: 'Two pairs of hands holding a seedling in soil above a meadow of wildflowers',
-    pending: 'our-core-beliefs/hero-1',
-  },
-  {
-    image: beliefsImage('new-our-core-beliefs-hero-2.webp', 600, 513),
-    alt: 'A group of people sitting in a circle, holding hands',
-    pending: 'our-core-beliefs/hero-2',
-  },
-  {
-    image: beliefsImage('new-our-core-beliefs-hero-3.webp', 600, 1040),
-    alt: 'Two green bee-eaters perched on a thorny branch',
-    pending: 'our-core-beliefs/hero-3',
-  },
-];
 
 /** A belief's copy and artwork. The page supplies its icon. */
 export type BeliefCopy = Omit<Belief, 'icon'>;

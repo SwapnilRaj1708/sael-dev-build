@@ -183,13 +183,6 @@ export const SIZES_GALLERY = '(min-width: 30rem) 48vw, 92vw';
 export const SIZES_STORY_MEDIA = '(min-width: 64rem) 30rem, 7.5rem';
 
 /**
- * One of the three photographs in Our Core Beliefs' hero collage —
- * sections/page-hero/collage-backdrop. A third of the full-bleed hero at
- * every width, less a sliver of gap.
- */
-export const SIZES_COLLAGE = '34vw';
-
-/**
  * A belief card's cut-out — sections/belief-stack. From `lg` it is five
  * twelfths of the card, and the card is the content width less its own
  * padding: 440px at 1440 and 600px at 1920, about 31vw at both, rounded up.

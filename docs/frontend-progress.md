@@ -197,12 +197,12 @@ built (differences below).
 |---|---|---|---|
 | Story of Our Influence | `/story-of-our-influence/` | `Story of Our Influence.dc.html` | no hero; three `<StorySplit>` stories, one screen each, **snapping** |
 | Our Key ESG Metrics | `/our-key-esg-metrics/` | `Our Key ESG Metrics v2.dc.html` | `<EsgHero>` (the animated wheel from `ESG Animated Banner.dc.html`), `<SdgGrid>`, `<ProseSplit copyBeside>`, `<StakeholderMap>`, **snapping** |
-| Our Core Beliefs | `/our-core-beliefs/` | `Our Core Beliefs.dc.html` | `<PageHero backdrop={<CollageBackdrop>}>`, `<BeliefStack>` (one `<BeliefSection>` per belief) with the ESG Report pill, **snapping** |
+| Our Core Beliefs | `/our-core-beliefs/` | `Our Core Beliefs.dc.html` | `<PageHero>` (one photograph; the collage was replaced 2026-10-13), `<BeliefStack>` (one `<BeliefSection>` per belief) with the ESG Report pill, **snapping** |
 
 **New:** `sections/story-split/`, `sections/esg-hero/` (+ `esg-wheel.tsx`),
 `sections/sdg-grid/`, `sections/stakeholder-map/`, `sections/belief-stack/`
-(+ `belief-section.tsx`), `sections/page-hero/collage-backdrop.tsx`. **Opt-ins on shared
-pieces, no existing call site changed:** `<PageHero backdrop>` and `snap`, `<ProseSplit copyBeside>` and `snap`,
+(+ `belief-section.tsx`). **Opt-ins on shared
+pieces, no existing call site changed:** `<PageHero snap>`, `<ProseSplit copyBeside>` and `snap`,
 `<Button variant="pill">`, the `gradient-outline` utility, `legacyOrCdnImage()` in
 `lib/assets/cdn.ts`. Tokens in `theme.css` (two masks, the ESG wheel's colours, the
 belief accents, the collage scrim); the wheel's keyframes in `animations.css`, still state
