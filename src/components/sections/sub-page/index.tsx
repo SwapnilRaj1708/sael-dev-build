@@ -33,9 +33,11 @@ export interface SubPageProps {
   masthead?: 'plain' | 'ripple';
   /**
    * `default` gives the body the full content width. `article` is a reading
-   * layout, for a Newsroom article: the body in one centred column at
-   * `--measure-article`, and the `<h1>` at `--text-h2` rather than display
-   * size, because an article's title is a headline of up to thirty-five
+   * layout, for a Newsroom article: the body in one centred column as wide as
+   * the legal pages' (`--measure-legacy-doc`, three-quarters of the content
+   * width from `lg` — the client's call of 2026-10-13, when 68ch read as too
+   * narrow beside the Privacy Policy), and the `<h1>` at `--text-h2` rather
+   * than display size, because an article's title is a headline of up to thirty-five
    * words and not a page name. Pass no `nav` with it — an article is read,
    * not navigated beside.
    */
@@ -115,7 +117,7 @@ export function SubPage({
         order={2}
         className={cn(
           'min-w-0 lg:col-start-2 lg:row-start-1',
-          article && 'mx-auto w-full max-w-(--measure-article)',
+          article && 'mx-auto w-full max-w-(--measure-legacy-doc) lg:w-3/4',
         )}
       >
         {children}

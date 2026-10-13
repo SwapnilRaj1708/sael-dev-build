@@ -1,6 +1,12 @@
 import { env } from '@/lib/config/env';
 import { legacyOrBlobUrl } from '@/lib/utils/blob-url';
-import { newsItemHref, newsPreviewItemHref, newsVideoThumbnail } from '../news-links';
+import {
+  newsArticlePath,
+  newsItemHref,
+  newsListingPath,
+  newsPreviewItemHref,
+  newsVideoThumbnail,
+} from '../news-links';
 import type { ContentRepository, NewsItemsQuery } from '../repository';
 import type {
   BlobFile,
@@ -193,15 +199,15 @@ function toGroups(row: TileFixture): InvestorDocumentGroup[] {
 
 /**
  * A homepage carousel row, as `news-items.json` has stored it since FE-04 —
- * the card fields only, `href` written out. Read as it is so the homepage's
- * call returns exactly what it always has; the fields it does not carry are
- * the same in all six rows and are filled in on read.
+ * the card fields, and the slug of the press release it is, in
+ * `newsroom-items.json`. The fields it does not carry are the same in all six
+ * rows and are filled in on read.
  */
 interface HomepageNewsFixture {
   id: string;
   title: string;
   publishedAt: string;
-  href: string;
+  slug: string;
   imageUrl: string | null;
 }
 
@@ -358,9 +364,13 @@ export class MockContentRepository implements ContentRepository {
   /**
    * The homepage rail, from its own fixture, `news-items.json`, exactly as
    * it has been read since FE-04: six press releases, newest first, with the
-   * client's own stills from `public/news/` and every card linking to
-   * `/newsroom/`. A snapshot from before the Newsroom existed, kept so the
-   * homepage does not change under the API work.
+   * client's own stills from `public/news/`. A snapshot from before the
+   * Newsroom existed, kept so the homepage does not change under the API work.
+   *
+   * Each card links to its own press release's page (2026-10-13; until then
+   * every one linked to `/newsroom/`). The slug is checked against the
+   * Newsroom's fixture, so a card never links to an article the mock cannot
+   * serve: one that does not match goes to the Press Release listing.
    *
    * **It is not In The News**, which the API rail is. Switching this to the
    * `in-the-news` rows of `newsroom-items.json` would make the mock match,
@@ -368,11 +378,18 @@ export class MockContentRepository implements ContentRepository {
    * decision for the homepage's owner, not a side effect of the cutover.
    */
   getInTheNewsRail(limit: number): Promise<NewsItem[]> {
+    const articles = new Set(
+      (newsroomItems as NewsroomFixture[])
+        .filter((row) => row.category === 'press-release' && row.body !== null)
+        .map((row) => row.slug),
+    );
     const items = (newsItems as HomepageNewsFixture[]).map((row): NewsItem => ({
       ...row,
       category: 'press-release',
+      href: articles.has(row.slug)
+        ? newsArticlePath('press-release', row.slug)
+        : newsListingPath('press-release'),
       imageAlt: null,
-      slug: null,
       externalUrl: null,
       video: null,
       publication: null,

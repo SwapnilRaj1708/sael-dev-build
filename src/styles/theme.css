@@ -74,6 +74,14 @@
   --color-footer-bg: #22262e;
   --color-footer-icon: #1a1e25;
 
+  /* The social platforms' own brand colours, used only where a link to one
+   * fills with its platform on hover — the social FAB
+   * (components/layout/social-fab). Instagram's is a gradient,
+   * --gradient-brand-instagram. */
+  --color-brand-facebook: #1877f2;
+  --color-brand-linkedin: #0a66c2;
+  --color-brand-x: #000000;
+
   /* The flat purple the client's design uses for section eyebrows, in place of
    * the prototype's red→blue gradient. Both exist: --gradient-eyebrow is still
    * the default, and this is the `accent` tone on <Eyebrow>. */
@@ -90,6 +98,11 @@
    * hovered or current nav link so the bar reads as one family. From the
    * client's navbar design (`assets/navbar/index.html`). */
   --color-nav-accent: #7a1f57;
+  /* The play mark on a full-screen menu row (client, 2026-10-13): the plum
+   * that tints the lit column (--gradient-mega-hot), lifted a little toward
+   * white — 78% of --color-nav-accent — so the cue matches its column and is
+   * softer than the brand red it replaced. */
+  --color-mega-cue: #9a5280;
 
   /* The docked share-price ticker. Green is the design's "up" colour and is
    * not a brand token — it means something, so it is named for what it means
@@ -627,6 +640,12 @@
   /* The WCAG floor for a touch target. docs/responsive-strategy.md §5. */
   --spacing-touch: 2.75rem; /* 44 */
 
+  /* The social FAB (components/layout/social-fab): the button, each social
+   * disc it opens, and how far the pair stands off the viewport's corner. */
+  --spacing-fab: 3.5rem; /* 56 */
+  --spacing-fab-item: 3rem; /* 48 */
+  --spacing-fab-offset: clamp(1rem, 0.6rem + 1.6vw, 2rem); /* 16 → 32 */
+
   /* A stacked link's row height where the pointer is fine — the footer's link
    * columns and nothing else so far. **Not a relaxation of --spacing-touch.**
    *
@@ -694,10 +713,6 @@
     38rem
   ); /* 360 → 608 */
 
-  /* The solid square at the centre of a map pin. The 44px touch target around
-   * it is --spacing-touch. */
-  --spacing-map-pin: 0.4375rem; /* 7 */
-
   /* The gap between two cards on a horizontal rail. Deliberately tighter than
    * --spacing-gap-grid (16 → 31): the rail's cards are read as one continuous
    * strip, and the grid gap opens them into separate objects. Measured from
@@ -759,14 +774,10 @@
   /* A story's photograph below `lg`, beside its eyebrow and heading. */
   --spacing-story-thumb: 7.5rem; /* 120 */
 
-  /* A belief card's cut-out below `lg`: the box it is fitted into, how far
-   * that box rises out of the card's top edge, and the padding that clears
-   * the rest of it inside the card; the section's top padding carries the
-   * rise. From `lg` the cut-out is a column of the
+  /* A belief card's cut-out below `lg`: the box it is fitted into, at the
+   * card's foot. From `lg` the cut-out is a column of the
    * card instead and --spacing-belief-media is that column's floor. */
   --spacing-belief-cutout: 18.75rem; /* 300 */
-  --spacing-belief-rise: 6rem; /* 96 */
-  --spacing-belief-card-top: 13.75rem; /* 220 */
   --spacing-belief-media: 26.25rem; /* 420 */
 
   /* A stakeholder box on the tree from `lg`, tall enough for a three-line
@@ -1033,6 +1044,11 @@
   --shadow-card-hover: 0 22px 44px rgb(20 24 32 / 0.14);
   /* A map tooltip, which floats over a dark section and needs to lift off it. */
   --shadow-tooltip: 0 8px 24px rgb(0 0 0 / 0.35);
+  /* The social FAB, in the CTA gradient's purple end so it reads as lit by
+   * its own colour; and the white discs it opens, which have to lift off any
+   * ground, light or dark. */
+  --shadow-fab: 0 14px 30px -10px rgb(69 37 141 / 0.6);
+  --shadow-fab-item: 0 8px 20px -8px rgb(0 0 0 / 0.45);
   --shadow-nav-cta: 0 10px 24px -8px rgb(216 31 53 / 0.5);
   --shadow-nav-cta-hover: 0 16px 30px -8px rgb(216 31 53 / 0.6);
   --shadow-quote: 0 16px 34px -18px rgb(6 40 30 / 0.45);
@@ -1088,6 +1104,16 @@
   /* Gradients — docs/design-guidelines.md §1 */
   --gradient-eyebrow: linear-gradient(90deg, #aa0505 0%, #0d2fa2 100%);
   --gradient-cta: linear-gradient(105deg, #f9e800 -24%, #e40f14 6%, #45258d 95%);
+  /* Instagram's brand gradient, for the social FAB's hover. See
+   * --color-brand-*. */
+  --gradient-brand-instagram: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
   --gradient-stats: linear-gradient(90deg, #e43026 0%, #4a3290 100%);
   --gradient-caption: linear-gradient(
     94.6deg,
@@ -1319,11 +1345,11 @@
    * one token serves all four accents: the layer that paints it takes the
    * accent as its text colour and the gradient picks it up there, where a
    * `var()` here would have been resolved once, on :root, before any card
-   * had set one. It pools behind the cut-out — under it below `lg`, behind
+   * had set one. It pools behind the cut-out — under it, at the card's foot, below `lg`, behind
    * the end or start column from `lg` — so the figure stands in its own
    * light. The design's positions, strengths and reach. */
   --gradient-belief-glow-top: radial-gradient(
-    circle at 50% 18%,
+    circle at 50% 82%,
     color-mix(in srgb, currentColor 18%, transparent),
     transparent 60%
   );
@@ -1560,8 +1586,12 @@
    * client's design rather than derived from the brand ramp. */
   --gradient-date-chip: linear-gradient(90deg, #16357e, #2f8f3f);
 
-  /* The masthead's Contact Us button, and the underline under a current nav
-   * link. The same three stops, so the bar reads as one object. */
+  /* The masthead's Contact Us button, the underline under a current nav
+   * link, and the row of the page you are on in the full-screen menu and the
+   * mobile drawer (client, 2026-10-13, white text on it — the red end is
+   * 5:1). The same three stops, so the bar and its menu read as one object.
+   * Lightened versions were tried for the menu row and dropped: the client
+   * wants the theme itself. */
   --gradient-nav-cta: linear-gradient(100deg, #2b1a6b 0%, #7a1f57 48%, #d81f35 100%);
 
   /* The full-screen menu. The light theme from the client's navbar design —
@@ -2245,6 +2275,14 @@
    * column arriving and the next. */
   --duration-mega: 450ms;
   --duration-mega-step: 60ms;
+  /* The social FAB opening: each disc's travel, and the gap between one disc
+   * and the next, nearest the button first (and last on the way back). */
+  --duration-fab: 320ms;
+  --duration-fab-step: 50ms;
+  /* A social disc filling with its platform's colour on hover, from the
+   * centre out — the footer's and the FAB's (components/ui/social-brand-fill).
+   * Long enough to be seen growing, short enough not to lag the pointer. */
+  --duration-social-fill: 380ms;
   /* How far a revealed element travels. Enough to read as "up", not so far
    * that the layout visibly reflows as it lands. */
   --reveal-shift: 1.75rem; /* 28 */
@@ -2271,6 +2309,7 @@
    * these cannot be @theme tokens.
    * ------------------------------------------------------------------ */
   --z-preview-banner: 90; /* under the bar, so its menus open over the strip */
+  --z-fab: 95; /* the social FAB: under the bar, its menu and the drawer */
   --z-header: 100;
   --z-drawer: 110;
   --z-skip-link: 120;
@@ -2287,12 +2326,25 @@
    * by the same amount, so one token serves both. */
   --saturate-glass: 1.4;
 
+  /* The solid square at the centre of a map pin: its width, as a percentage
+   * of the map's width. Its height follows at 1:1. So the pin scales with the
+   * map rather than staying 8px (its size until 2026-10-13). Read by
+   * map-figure.tsx through `cqw`, against the map's own box. **This is the
+   * number to tune.** A single map can take its own by setting it on the
+   * figure's className — `[--map-pin-share:3]`. The 44px touch target around
+   * the pin is --spacing-touch, and does not follow this. */
+  --map-pin-share: 1.4;
+
   /* How far a map pin's halo grows before it fades — the pulse's radius, as a
-   * multiple of the pin (--spacing-map-pin). Read by `saelPing` in
+   * multiple of the pin (--map-pin-share). Read by `saelPing` in
    * animations.css. Was 2.6 until 2026-09-21; doubled on the client's note
    * that the pulse was hard to see. **This is the number to tune** — change
    * it here, nowhere else, and every map on the site follows. */
   --map-ping-scale: 4.2;
+
+  /* How far the social FAB's halo grows before it fades, as a multiple of the
+   * button. Read by `fabHalo` in animations.css. */
+  --fab-halo-scale: 1.8;
 
   /* The primary CTA's hover. A filter rather than a second gradient, so the
    * button lifts without the stops having to be restated. */

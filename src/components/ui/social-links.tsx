@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { ArrowUpRight } from 'lucide-react';
 import { SOCIAL_ICONS } from '@/components/icons/social';
+import { SOCIAL_MARK_ON_FILL_CLASS, SocialBrandFill } from '@/components/ui/social-brand-fill';
 import type { SocialLink } from '@/lib/content/static/footer';
 import { cn } from '@/lib/utils/cn';
 
@@ -29,7 +30,7 @@ const link = cva(
   {
     variants: {
       variant: {
-        solid: 'size-touch justify-center bg-white text-footer-icon',
+        solid: 'relative size-touch justify-center bg-white text-footer-icon',
         chip: [
           'w-full gap-tight border border-outline-dark py-1 pr-stack pl-1 text-body-sm text-white',
           'hover:border-white focus-visible:border-white focus-visible:outline-white',
@@ -49,7 +50,9 @@ const link = cva(
  * platform's name — shown on a chip, read from `sr-only` text on a disc. The
  * mark itself is unlabelled (`icons/social.tsx`), so the name is never
  * announced twice. Each is at least a 44px target, and lifts on hover and on
- * keyboard focus alike; a chip's arrow leans out with it.
+ * keyboard focus alike; a chip's arrow leans out with it, and a disc fills
+ * with its platform's colour from the centre out, as the social FAB's do
+ * (`<SocialBrandFill>`).
  *
  * Chips sit in one row where there is room for all four — from `sm` while
  * the row is full width, and from `xl` beside a heading — and as an even
@@ -100,7 +103,8 @@ export function SocialLinks({ links, newTabNote, variant = 'solid', className }:
                 </>
               ) : (
                 <>
-                  <Icon className="size-5" />
+                  <SocialBrandFill platform={social.platform} />
+                  <Icon className={cn('size-5', SOCIAL_MARK_ON_FILL_CLASS)} />
                   <span className="sr-only">
                     {social.label} — {newTabNote}
                   </span>

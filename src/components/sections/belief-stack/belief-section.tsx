@@ -26,7 +26,35 @@ export interface BeliefCutout {
   alt: string;
   /** The asset's name in docs/asset-inventory.md, for the pending placeholder. */
   pending?: string;
+  /**
+   * Which edge of the card the figure runs out to, over its padding. Below
+   * `lg` the figure stands at the card's foot, so `right` and `left` also
+   * reach the bottom edge; from `lg` it is its half of the card, and
+   * `bottom-flush` alone reaches the bottom. Omitted: centred, inside the padding.
+   */
+  anchor?: 'right' | 'left' | 'bottom-flush';
+  /** Mirror the figure horizontally. */
+  flip?: boolean;
 }
+
+const ANCHOR_BOX_CLASS = {
+  right: '-mr-flow lg:mb-0',
+  left: '-ml-flow lg:mb-0',
+  'bottom-flush': '',
+} as const;
+
+/** A mirrored image is positioned before it is flipped, so its side swaps. */
+const MIRRORED = {
+  right: 'left',
+  left: 'right',
+  'bottom-flush': 'bottom-flush',
+} as const;
+
+const ANCHOR_IMAGE_CLASS = {
+  right: 'object-right-bottom lg:object-right',
+  left: 'object-left-bottom lg:object-left',
+  'bottom-flush': 'object-bottom',
+} as const;
 
 /** One belief: what its card says and shows. */
 export interface Belief {
@@ -65,11 +93,11 @@ export interface BeliefSectionProps extends Belief {
  *
  * Three things the design adds to the outlined card, all kept to this file:
  *
- *  - **The cut-out breaks out of the card below `lg`.** It is fitted into a
- *    box that rises `--spacing-belief-rise` out of the card's top edge, the
- *    section's top padding makes room for that, and the card pads its own top
- *    to clear the rest. From `lg` the cut-out is half of the card instead,
- *    fitted and centred in it, alternating sides.
+ *  - **The cut-out stands at the card's edge.** It is fitted into a
+ *    box at the card's foot, under the copy, and runs out over the card's
+ *    padding to its right, left or bottom edge (the cut-out's `anchor`; the
+ *    card clips it at the corners). From `lg` the cut-out is half of the
+ *    card instead, alternating sides.
  *  - **A diamond badge** — the live page's diamond, kept: a hairline square
  *    turned 45° with the line icon upright inside it.
  *  - **One accent per belief**, on the check marks and on a glow pooled
@@ -106,12 +134,7 @@ export function BeliefSection({
       // reviewed at: the card is the screen's content, not a band in it.
       spacing="tight"
       data-snap-section
-      className={cn(
-        // Below `lg` the cut-out rises out of the card's top edge, so the
-        // section's top padding carries that rise on top of the rhythm.
-        'pt-[calc(var(--spacing-section-y-tight)+var(--spacing-belief-rise))] lg:pt-section-y-tight',
-        snap && 'flex min-h-viewport snap-start items-center',
-      )}
+      className={cn(snap && 'flex min-h-viewport snap-start items-center')}
     >
       <Card
         shape="outlined"
@@ -119,8 +142,10 @@ export function BeliefSection({
         inset="none"
         hoverEffect={false}
         className={cn(
-          'isolate flex-col pt-belief-card-top',
-          'lg:grid lg:items-stretch lg:gap-x-ledger-col-gap lg:pt-flow',
+          'isolate flex-col',
+          // The figures run out to the card's edge and are clipped by its corners.
+          'overflow-clip',
+          'lg:grid lg:items-stretch lg:gap-x-ledger-col-gap',
           // The copy takes seven parts to the cut-out's five, so a belief's
           // name holds one line and the card fits a screen; the design's even
           // split set every name on two. The cut-out is fitted, not cropped,
@@ -191,12 +216,13 @@ export function BeliefSection({
         <Reveal
           order={1}
           className={cn(
-            // Below `lg`: a box over the card's top edge, the figure standing
-            // on its foot so it meets the badge rather than floating.
-            'absolute inset-x-4 -top-belief-rise h-belief-cutout',
-            // From `lg`: a column of the card, the figure fitted and centred.
-            'lg:relative lg:inset-x-auto lg:top-auto lg:row-start-1 lg:h-auto lg:min-h-belief-media',
+            // Below `lg`: a box at the card's foot, under the copy, running
+            // out over the padding to the bottom edge.
+            'relative mt-flow -mb-flow h-belief-cutout',
+            // From `lg`: a column of the card, beside the copy.
+            'lg:row-start-1 lg:mt-0 lg:h-auto lg:min-h-belief-media',
             side === 'end' ? 'lg:col-start-2' : 'lg:col-start-1',
+            cutout.anchor !== undefined && ANCHOR_BOX_CLASS[cutout.anchor],
           )}
         >
           <MediaFrame
@@ -206,7 +232,13 @@ export function BeliefSection({
             pending={cutout.pending}
             // A cut-out has its own transparent ground: no fill behind it.
             className="absolute inset-0 bg-transparent"
-            imageClassName="object-contain object-bottom lg:object-center"
+            imageClassName={cn(
+              'object-contain',
+              cutout.anchor !== undefined
+                ? ANCHOR_IMAGE_CLASS[cutout.flip === true ? MIRRORED[cutout.anchor] : cutout.anchor]
+                : 'lg:object-center',
+              cutout.flip === true && '-scale-x-100',
+            )}
           />
         </Reveal>
       </Card>

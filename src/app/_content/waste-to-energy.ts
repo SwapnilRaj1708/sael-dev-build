@@ -142,22 +142,22 @@ export const wasteToEnergySites: readonly PresenceSite[] = [
   {
     id: 'punjab',
     name: 'Punjab',
-    x: 87.4,
-    y: 65.4,
+    x: 86.8,
+    y: 59.9,
     figures: [{ metric: 'agri-waste', value: '60.5 MW' }],
   },
   {
     id: 'haryana',
     name: 'Haryana',
-    x: 80,
-    y: 81.5,
+    x: 79.1,
+    y: 76,
     figures: [{ metric: 'agri-waste', value: '15 MW' }],
   },
   {
     id: 'rajasthan',
     name: 'Rajasthan',
-    x: 50,
-    y: 128.4,
+    x: 48.4,
+    y: 116.3,
     figures: [{ metric: 'agri-waste', value: '89.4 MW' }],
   },
 ];

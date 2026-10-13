@@ -182,7 +182,8 @@ export function PresenceMapFigure({
       order={order}
       role="group"
       aria-label={label}
-      className={cn('relative aspect-map-india w-full max-w-map shrink-0', className)}
+      // A container, so a pin can be a share of the map's width.
+      className={cn('@container relative aspect-map-india w-full max-w-map shrink-0', className)}
     >
       <MediaFrame
         image={map.image}
@@ -204,6 +205,12 @@ export function PresenceMapFigure({
         const towardsBottom = site.y < MAP_VIEWBOX.height * 0.3;
 
         const pinClass = 'absolute size-touch -translate-x-1/2 -translate-y-1/2 cursor-pointer';
+        // The pin and its halo are --map-pin-share percent of the map's width,
+        // and square. `cqw` resolves against the figure, which is the
+        // container below, so the pin follows the map's box rather than the
+        // 44px button it sits in.
+        const dotClass =
+          'absolute top-1/2 left-1/2 aspect-square w-[calc(var(--map-pin-share)*1cqw)] -translate-x-1/2 -translate-y-1/2';
         const pinContent = (
           <>
             <span className="sr-only">
@@ -214,7 +221,7 @@ export function PresenceMapFigure({
             <span
               aria-hidden="true"
               className={cn(
-                'absolute top-1/2 left-1/2 size-map-pin -translate-x-1/2 -translate-y-1/2',
+                dotClass,
                 'rounded-none bg-white',
                 'transition-transform duration-(--duration-micro)',
                 'group-focus-within:scale-175 group-hover:scale-175',
@@ -223,7 +230,7 @@ export function PresenceMapFigure({
             />
             <span
               aria-hidden="true"
-              className="anim-map-ping absolute top-1/2 left-1/2 size-map-pin -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+              className={cn('anim-map-ping rounded-full bg-white', dotClass)}
             />
           </>
         );

@@ -1,8 +1,10 @@
 'use client';
 
+import { Play } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { CSSProperties, RefObject } from 'react';
-import { type NavItem } from '@/components/layout/header/nav-config';
+import { isNavItemActive, type NavItem } from '@/components/layout/header/nav-config';
 import { Container } from '@/components/ui/container';
 import { cn } from '@/lib/utils/cn';
 
@@ -52,6 +54,18 @@ export interface MegaMenuProps {
  * so an interrupted open reverses cleanly instead of leaving half the columns
  * mid-flight.
  *
+ * **The page you are on is marked** in the brand gradient — the masthead
+ * button's own, `--gradient-nav-cta` — white on it, with
+ * `aria-current="page"`. The client's call
+ * of 2026-10-13, so the panel says where you are as well as where you can go.
+ * It takes neither the lit column's wash nor its inset change: it is already
+ * marked.
+ *
+ * Each row's cue is a small play mark (client, 2026-10-13; it was a `→`) in
+ * the lit column's own plum, softened (`--color-mega-cue`). It slides in on
+ * the lit column and under the pointer, and stays on the current page, where
+ * it is white.
+ *
  * Below `lg` this never renders: the drawer covers that width, and two
  * navigations answering the same links is two things to keep in step.
  */
@@ -66,6 +80,8 @@ export function MegaMenu({
   onPointerLeave,
   firstLinkRef,
 }: MegaMenuProps) {
+  const pathname = usePathname();
+
   return (
     <div
       id={id}
@@ -131,42 +147,63 @@ export function MegaMenu({
                 </p>
 
                 <ul className="list-none">
-                  {links.map((link, linkIndex) => (
-                    <li key={link.label}>
-                      <Link
-                        ref={hot && linkIndex === 0 ? firstLinkRef : undefined}
-                        href={link.href ?? '/'}
-                        onClick={onClose}
-                        {...(link.external === true ? { rel: 'noopener noreferrer' } : {})}
-                        className={cn(
-                          'border-mega-rule flex items-center justify-between gap-2.5',
-                          'border-b py-2.5 text-body-sm text-body-base',
-                          'transition-[color,padding,border-color] duration-(--duration-micro)',
-                          'hover:border-nav-accent/50 hover:pl-3 hover:text-ink',
-                          'focus-visible:pl-3',
-                          'motion-reduce:transition-none',
-                          // The lit column pulls in and washes without needing a
-                          // pointer on the link itself, so the whole section
-                          // reads as selected rather than one row of it.
-                          hot && [
-                            'border-nav-accent/40 bg-(image:--gradient-mega-hot) pl-3.5 text-ink',
-                          ],
-                        )}
-                      >
-                        <span>{link.label}</span>
-                        <span
-                          aria-hidden="true"
+                  {links.map((link, linkIndex) => {
+                    const current = isNavItemActive(link, pathname);
+
+                    return (
+                      <li key={link.label}>
+                        <Link
+                          ref={hot && linkIndex === 0 ? firstLinkRef : undefined}
+                          href={link.href ?? '/'}
+                          onClick={onClose}
+                          aria-current={current ? 'page' : undefined}
+                          {...(link.external === true ? { rel: 'noopener noreferrer' } : {})}
                           className={cn(
-                            'text-brand-red transition-[opacity,transform] duration-(--duration-micro)',
+                            'group/mm-row border-mega-rule flex items-center justify-between gap-2.5',
+                            'border-b py-2.5 text-body-sm',
+                            'transition-[color,background-color,padding,border-color] duration-(--duration-micro)',
                             'motion-reduce:transition-none',
-                            hot ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0',
+                            current
+                              ? 'bg-(image:--gradient-nav-cta) px-3.5 text-white'
+                              : [
+                                  'text-body-base hover:border-nav-accent/50 hover:pl-3 hover:text-ink',
+                                  'focus-visible:pl-3',
+                                  // The lit column pulls in and washes without
+                                  // needing a pointer on the link itself, so the
+                                  // whole section reads as selected rather than
+                                  // one row of it.
+                                  hot && [
+                                    'border-nav-accent/40 bg-(image:--gradient-mega-hot) pl-3.5 text-ink',
+                                  ],
+                                ],
                           )}
                         >
-                          →
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
+                          <span>{link.label}</span>
+                          <Play
+                            aria-hidden="true"
+                            focusable="false"
+                            className={cn(
+                              'size-3 shrink-0 fill-current',
+                              'transition-[opacity,translate] duration-(--duration-micro)',
+                              'motion-reduce:transition-none',
+                              current
+                                ? 'translate-x-0 text-white opacity-100'
+                                : [
+                                    'text-mega-cue',
+                                    hot
+                                      ? 'translate-x-0 opacity-100'
+                                      : [
+                                          '-translate-x-2 opacity-0',
+                                          'group-hover/mm-row:translate-x-0 group-hover/mm-row:opacity-100',
+                                          'group-focus-visible/mm-row:translate-x-0 group-focus-visible/mm-row:opacity-100',
+                                        ],
+                                  ],
+                            )}
+                          />
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );

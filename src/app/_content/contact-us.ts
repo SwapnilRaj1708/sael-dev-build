@@ -143,13 +143,13 @@ export const contactMapCaption = {
 
 /**
  * Where the office sits on the dotted India map in the map's preview
- * (`<MapBeacon>`): Solar Energy's Delhi pin, `x: 95.2, y: 89.6` in
+ * (`<MapBeacon>`): Solar Energy's Delhi pin, `x: 94.6, y: 84` in
  * `_content/solar-energy.ts`, so the two maps agree. Like every pin there it
  * is fitted, not measured — at this scale all of Delhi is a few pixels, which
  * is as precise as a picture of India needs to be; the loaded map is the
  * precise one.
  */
-export const contactOffice = { x: 95.2, y: 89.6 };
+export const contactOffice = { x: 94.6, y: 84 };
 
 /** The form's heading. The eyebrow is the legacy "tinyText", in the source's own capitals. */
 export const contactFormHeading = {

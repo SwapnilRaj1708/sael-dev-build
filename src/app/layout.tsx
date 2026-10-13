@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Footer } from '@/components/layout/footer/footer';
 import { Header } from '@/components/layout/header/header';
+import { SocialFab } from '@/components/layout/social-fab/social-fab';
 import { isPublicSite, siteConfig } from '@/lib/config/site';
+import { SOCIAL_LINKS } from '@/lib/content/static/footer';
 import { din } from '@/lib/fonts';
 import { organizationJsonLd, webSiteJsonLd } from '@/lib/seo/json-ld';
 import '@/styles/globals.css';
@@ -61,6 +63,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </main>
 
         <Footer />
+
+        {/* The social profiles, fixed to the corner of every page. */}
+        <SocialFab links={SOCIAL_LINKS} newTabNote="opens in a new tab" />
 
         <script
           type="application/ld+json"

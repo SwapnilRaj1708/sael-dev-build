@@ -201,7 +201,12 @@ export function MobileNav() {
                             aria-current={active ? 'page' : undefined}
                             className={cn(
                               'flex min-h-touch items-center py-4 text-h3',
-                              active ? 'text-accent-hover' : 'text-ink',
+                              // The current page in the brand gradient, white,
+                              // as the desktop menu has it (client, 2026-10-13):
+                              // the gradient runs to the column's edges and the
+                              // label steps in, as a section's current row
+                              // does below.
+                              active ? 'bg-(image:--gradient-nav-cta) px-4 text-white' : 'text-ink',
                             )}
                           >
                             {item.label}
@@ -229,8 +234,12 @@ export function MobileNav() {
                                     isNavItemActive(child, pathname) ? 'page' : undefined
                                   }
                                   className={cn(
-                                    'flex min-h-touch items-center py-2 pl-4 text-body text-body-base',
-                                    'hover:text-accent-hover',
+                                    'flex min-h-touch items-center py-2 pl-4 text-body',
+                                    // The current page in the brand
+                                    // gradient, as above.
+                                    isNavItemActive(child, pathname)
+                                      ? 'bg-(image:--gradient-nav-cta) text-white'
+                                      : 'text-body-base hover:text-accent-hover',
                                   )}
                                 >
                                   {child.label}

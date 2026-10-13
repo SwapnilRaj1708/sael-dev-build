@@ -19,6 +19,13 @@ export interface NewsCarouselProps {
    */
   newTabNote: string;
   snap?: boolean;
+  /**
+   * How long each step of the rail's auto-advance waits, in milliseconds. It
+   * moves one card at a time and returns to the first after the last; it
+   * holds still under a pointer, focus or a finger, off screen, and entirely
+   * under a reduced-motion preference. See `<Rail autoAdvanceMs>`.
+   */
+  autoAdvanceMs?: number;
 }
 
 /**
@@ -50,9 +57,19 @@ export interface NewsCarouselProps {
  *    accessibility tree and in the page's text, so a screen reader and a search
  *    engine both still get the whole headline.
  *
- * A Server Component apart from the rail's arrows.
+ * **The rail advances on its own**, one card every `autoAdvanceMs`, at the
+ * client's request of 2026-10-13. The arrows and a swipe still work, and each
+ * buys a full interval before it moves again.
+ *
+ * A Server Component apart from the rail's arrows and its timer.
  */
-export function NewsCarousel({ title, items, newTabNote, snap = false }: NewsCarouselProps) {
+export function NewsCarousel({
+  title,
+  items,
+  newTabNote,
+  snap = false,
+  autoAdvanceMs = 2500,
+}: NewsCarouselProps) {
   if (items.length === 0) return null;
 
   return (
@@ -63,7 +80,7 @@ export function NewsCarousel({ title, items, newTabNote, snap = false }: NewsCar
       spacing="tight"
       className={cn('flex items-center', snap && 'min-h-viewport snap-start')}
     >
-      <Rail>
+      <Rail autoAdvanceMs={autoAdvanceMs}>
         <div className="flex w-full flex-col gap-flow">
           <Container className="flex flex-wrap items-center justify-between gap-stack">
             <Reveal order={0}>

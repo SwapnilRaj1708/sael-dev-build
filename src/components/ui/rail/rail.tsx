@@ -1,6 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { RailContextProvider, type RailState } from './rail-context';
 
@@ -10,6 +18,12 @@ const EPSILON = 1;
 export interface RailProps {
   /** The heading block, the track, and the arrows — in the design's order. */
   children: ReactNode;
+  /**
+   * Advance one card on its own every this many milliseconds, wrapping back to
+   * the first after the last. Omit for a rail that moves only when asked to.
+   * See `useAutoAdvance` below for what holds it still.
+   */
+  autoAdvanceMs?: number;
 }
 
 /**
@@ -34,9 +48,10 @@ export interface RailProps {
  *    carousel jump when the viewport resizes mid-transition.
  *
  * What is left for script is the two arrows and whether each is spent, and
- * that is read back from the scroll position rather than counted.
+ * that is read back from the scroll position rather than counted — and, when
+ * `autoAdvanceMs` is set, a timer that presses "next" for the reader.
  */
-export function Rail({ children }: RailProps) {
+export function Rail({ children, autoAdvanceMs }: RailProps) {
   const trackRef = useRef<HTMLUListElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -102,10 +117,120 @@ export function Rail({ children }: RailProps) {
     [reducedMotion],
   );
 
+  useAutoAdvance(trackRef, autoAdvanceMs, page);
+
   const value = useMemo<RailState>(
     () => ({ trackRef, atStart: spent.start, atEnd: spent.end, page, measure }),
     [spent.start, spent.end, page, measure],
   );
 
   return <RailContextProvider value={value}>{children}</RailContextProvider>;
+}
+
+/**
+ * Page the rail forward one card every `intervalMs`, and back to the first
+ * card after the last.
+ *
+ * It holds still for anything that suggests a reader is looking at, or using,
+ * the rail — a pointer over it, keyboard focus in it, a finger on it — and
+ * while it is off screen, where moving it would only cost battery. It does not
+ * run at all under a reduced-motion preference: a strip that slides on its own
+ * is exactly the motion that preference asks to be spared.
+ *
+ * **Every scroll re-arms the timer**, whoever caused it. A swipe, an arrow or
+ * the timer's own step each buys a full interval before the next one, so the
+ * rail never jumps a card the reader has just brought into view.
+ *
+ * The timer lives in a ref and is driven by DOM events, not React state: the
+ * rail re-renders only for its arrows, as before.
+ */
+function useAutoAdvance(
+  trackRef: RefObject<HTMLUListElement | null>,
+  intervalMs: number | undefined,
+  page: (direction: 1 | -1) => void,
+) {
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const element = trackRef.current;
+    if (element === null || intervalMs === undefined || reducedMotion) return;
+
+    let timer: number | undefined;
+    let held = { pointer: false, focus: false, touch: false };
+    // Assume visible until told otherwise, like the hero: without an
+    // IntersectionObserver this degrades to a rail that always advances.
+    let onScreen = true;
+
+    const step = () => {
+      const furthest = element.scrollWidth - element.clientWidth;
+      if (furthest <= EPSILON) return;
+      if (element.scrollLeft >= furthest - EPSILON) {
+        element.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        page(1);
+      }
+    };
+
+    const arm = () => {
+      window.clearTimeout(timer);
+      timer = undefined;
+      if (!onScreen || held.pointer || held.focus || held.touch) return;
+      timer = window.setTimeout(step, intervalMs);
+    };
+
+    const hold = (key: keyof typeof held, value: boolean) => () => {
+      held = { ...held, [key]: value };
+      arm();
+    };
+
+    // A mouse only: a touch fires pointerenter too, but the touch handlers
+    // below already hold it, and release it when the finger lifts rather than
+    // whenever the browser decides the pointer has "left".
+    const onPointerEnter = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse') hold('pointer', true)();
+    };
+    const onPointerLeave = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse') hold('pointer', false)();
+    };
+    const onFocusIn = hold('focus', true);
+    const onFocusOut = (event: FocusEvent) => {
+      // Focus moving between cards inside the rail is still focus in it.
+      if (!element.contains(event.relatedTarget as Node | null)) hold('focus', false)();
+    };
+    const onTouchStart = hold('touch', true);
+    const onTouchEnd = hold('touch', false);
+
+    element.addEventListener('pointerenter', onPointerEnter);
+    element.addEventListener('pointerleave', onPointerLeave);
+    element.addEventListener('focusin', onFocusIn);
+    element.addEventListener('focusout', onFocusOut);
+    element.addEventListener('touchstart', onTouchStart, { passive: true });
+    element.addEventListener('touchend', onTouchEnd);
+    element.addEventListener('touchcancel', onTouchEnd);
+    element.addEventListener('scroll', arm, { passive: true });
+
+    let observer: IntersectionObserver | undefined;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(([entry]) => {
+        onScreen = entry?.isIntersecting ?? true;
+        arm();
+      });
+      observer.observe(element);
+    }
+
+    arm();
+
+    return () => {
+      window.clearTimeout(timer);
+      observer?.disconnect();
+      element.removeEventListener('pointerenter', onPointerEnter);
+      element.removeEventListener('pointerleave', onPointerLeave);
+      element.removeEventListener('focusin', onFocusIn);
+      element.removeEventListener('focusout', onFocusOut);
+      element.removeEventListener('touchstart', onTouchStart);
+      element.removeEventListener('touchend', onTouchEnd);
+      element.removeEventListener('touchcancel', onTouchEnd);
+      element.removeEventListener('scroll', arm);
+    };
+  }, [trackRef, intervalMs, reducedMotion, page]);
 }

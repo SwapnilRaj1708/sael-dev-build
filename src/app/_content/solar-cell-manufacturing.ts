@@ -110,8 +110,8 @@ export const solarCellSites: readonly PresenceSite[] = [
   {
     id: 'greater-noida',
     name: 'Greater Noida',
-    x: 95.2,
-    y: 89.6,
+    x: 94.6,
+    y: 84,
     figures: [{ metric: 'solar-cell', value: '5 GW' }],
   },
 ];

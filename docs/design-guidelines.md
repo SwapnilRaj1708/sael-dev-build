@@ -656,7 +656,7 @@ given.
 | `--spacing-hero-progress` | 44px | Hero progress bar hit area |
 | `--spacing-hero-track` | 3px | …its visible track |
 | `--spacing-map` | `min(38rem, …)` | Dotted India map, capped so the section still fits one screen |
-| `--spacing-map-pin` | 7px | Solid square at a pin's centre |
+| `--map-pin-share` | 1.2057 (% of the map's width) | Solid square at a pin's centre: its width as a share of the map's width, height 1:1. In `:root`, not `@theme`; consumed through `cqw` |
 | `--spacing-pixel-strip` | 182px | Pixel strip height — 26 rows of 7px |
 | `--spacing-rule-w` / `-rule-h` | 44px / 3px | Section accent rule |
 | `--spacing-rule-accent` | 2px | Thin accent rule |

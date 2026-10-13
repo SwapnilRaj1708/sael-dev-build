@@ -34,7 +34,7 @@ export const metadata: Metadata = buildMetadata({
  * themselves on a 3.5s loop, sized to sit in the badge. Decorative: the badge
  * they sit in is `aria-hidden`, and the heading beside it names the belief.
  */
-const BELIEF_ICON_CLASS = 'size-9 object-contain lg:size-10';
+const BELIEF_ICON_CLASS = 'size-14 object-contain lg:size-16';
 
 const BELIEF_ICONS = [
   <Image key="stewardship" src={stewardshipIcon} alt="" className={BELIEF_ICON_CLASS} />,

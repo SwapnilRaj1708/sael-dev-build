@@ -128,7 +128,7 @@ export const heroSlides: HeroSlide[] = [
     symbol: {
       image: iconAgriWaste,
       pending: 'icons/symbol-agri-waste',
-      label: ['Agri Waste-', 'To-Energy'],
+      label: ['Agri Waste To', 'Energy'],
     },
     headline: 'Not pollution, but a charged Solution',
     highlight: 'Not pollution,',
@@ -308,8 +308,8 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'punjab',
     name: 'Punjab',
-    x: 87.4,
-    y: 65.4,
+    x: 86.8,
+    y: 59.9,
     figures: [
       { metric: 'module-assembly', value: '225 MW' },
       { metric: 'solar-ipp', value: '685.6 MW' },
@@ -319,8 +319,8 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'haryana',
     name: 'Haryana',
-    x: 80,
-    y: 81.5,
+    x: 79.1,
+    y: 76,
     figures: [
       { metric: 'solar-ipp', value: '5.3 MW' },
       { metric: 'agri-waste', value: '15 MW' },
@@ -329,15 +329,15 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'delhi',
     name: 'Delhi',
-    x: 95.2,
-    y: 89.6,
+    x: 94.6,
+    y: 84,
     figures: [{ metric: 'solar-ipp', value: '1 MW' }],
   },
   {
     id: 'uttar-pradesh',
     name: 'Uttar Pradesh',
     x: 125,
-    y: 121,
+    y: 108.4,
     figures: [
       { metric: 'solar-ipp', value: '196.2 MW' },
       { metric: 'module-assembly', plus: 'solar-cell', value: '10000 MW' },
@@ -346,8 +346,8 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'rajasthan',
     name: 'Rajasthan',
-    x: 50,
-    y: 128.4,
+    x: 48.4,
+    y: 116.3,
     figures: [
       { metric: 'module-assembly', value: '3400 MW' },
       { metric: 'solar-ipp', value: '298 MW' },
@@ -357,29 +357,29 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'assam',
     name: 'Assam',
-    x: 268,
-    y: 129,
+    x: 270.4,
+    y: 116,
     figures: [{ metric: 'solar-ipp', value: '1 MW' }],
   },
   {
     id: 'mizoram',
     name: 'Mizoram',
-    x: 260.5,
-    y: 168.5,
+    x: 262.8,
+    y: 156.4,
     figures: [{ metric: 'solar-ipp', value: '21 MW' }],
   },
   {
     id: 'gujarat',
     name: 'Gujarat',
-    x: 34.6,
-    y: 176.4,
+    x: 33,
+    y: 172.6,
     figures: [{ metric: 'solar-ipp', value: '2620 MW' }],
   },
   {
     id: 'maharashtra',
     name: 'Maharashtra',
-    x: 65.2,
-    y: 208.1,
+    x: 64,
+    y: 204.6,
     figures: [
       { metric: 'solar-ipp', value: '133.4 MW' },
       { metric: 'solar-ipp', plus: 'storage', value: '275 MW' },
@@ -388,8 +388,8 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'andhra-pradesh',
     name: 'Andhra Pradesh',
-    x: 110.4,
-    y: 255.4,
+    x: 109.8,
+    y: 261,
     figures: [
       { metric: 'solar-ipp', value: '1599 MW' },
       { metric: 'solar-ipp', plus: 'storage', value: '1646 MW' },
@@ -398,8 +398,8 @@ export const presenceSites: PresenceSite[] = [
   {
     id: 'karnataka',
     name: 'Karnataka',
-    x: 72.4,
-    y: 248,
+    x: 71.4,
+    y: 253,
     figures: [{ metric: 'solar-ipp', value: '1356 MW' }],
   },
 ];

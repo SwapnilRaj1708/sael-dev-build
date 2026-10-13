@@ -160,6 +160,10 @@ export function DesktopNav() {
             // `min-h-touch` also stays, and is now invisible: with no
             // background to draw it, the 44px hit area costs nothing visually
             // and the design's 33px would have been the only thing lost.
+            //
+            // The current section looks exactly as a hovered one does — the
+            // accent and the gradient rule — which is the client's call of
+            // 2026-10-13, after an inverted ink pill was tried and dropped.
             const linkClasses = cn(
               'text-nav-item text-nav-link relative inline-flex items-center gap-1 uppercase',
               'min-h-touch px-2',

@@ -3,11 +3,15 @@
  *
  * **Since 2026-10-06 the artwork is `map.svg`** (homepage, Contact Us) and its
  * four business recolourings (`solar-energy-map.svg`, `solar-cell-map.svg`,
- * `solar-module-map.svg`, `agri-waste-to-energy-map.svg`), all 4195 × 4628.
- * They frame the landmass edge to edge, where `dotted-map.svg` left a 0.7%
- * margin, so the pins sit within that fraction of where they did; the
- * coordinates below were not re-fitted. The history that follows is about
- * `dotted-map.svg`.
+ * `solar-module-map.svg`, `agri-waste-to-energy-map.svg`). They frame the
+ * landmass edge to edge, where `dotted-map.svg` left a 0.7% margin.
+ *
+ * **All five were replaced on 2026-10-13** with artwork at 4193 × 4521 (it
+ * was 4195 × 4628), and the homepage's pins were re-placed by hand against
+ * it. Every other page's pins are the same states at the same points — the
+ * business pages' sites and Contact Us's office are copies of the homepage's
+ * — so they were moved by the same amounts. The box below was not changed.
+ * The history that follows is about `dotted-map.svg`.
  *
  * It is the viewBox of `src/assets/images/dotted-map.svg`, the dotted India
  * artwork the client supplied on 2026-08-21, and it is only here so the

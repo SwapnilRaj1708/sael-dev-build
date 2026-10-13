@@ -163,6 +163,20 @@
   }
 }
 
+/* The social FAB's halo — the same pulse as a map pin's, at the FAB's own
+   reach (--fab-halo-scale), so a reader notices the button once. */
+@keyframes fabHalo {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  80%,
+  100% {
+    transform: scale(var(--fab-halo-scale));
+    opacity: 0;
+  }
+}
+
 /* The spark travelling along the timeline path. */
 @keyframes sparkFlick {
   0%,
@@ -278,6 +292,11 @@
   /* The pin's halo is decoration on top of a solid dot that is always there,
      so its still state is simply absent rather than frozen mid-pulse. */
   .anim-map-ping {
+    opacity: 0;
+  }
+
+  /* The FAB's halo is a call to notice it, not part of it: still, it is gone. */
+  .anim-fab-halo {
     opacity: 0;
   }
 
@@ -413,6 +432,12 @@
     .anim-map-ping {
       animation: saelPing 2.6s ease-out infinite;
       animation-delay: calc(var(--anim-index, 0) * 420ms);
+    }
+
+    /* Three pulses, a beat after the page settles, and then it stops: a halo
+     * that never ends is a distraction on every page of the site. */
+    .anim-fab-halo {
+      animation: fabHalo 2.4s ease-out 1.2s 3 both;
     }
 
     .anim-drawer-in {
