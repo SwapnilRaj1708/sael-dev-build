@@ -637,8 +637,23 @@
   --spacing-inset: clamp(1rem, 0.8846rem + 0.5128vw, 1.5rem); /* 16 → 24 */
   /* A business row's right padding from `lg` (client, 2026-10-14): 70% of
    * --spacing-flow, so the mark stands further off the edge as the screen
-   * grows — about 25px at `lg`, 35px at 1920. */
+   * grows — about 25px at `lg`, 35px at 1920. From `md` it is no longer
+   * padding on the row: it is counted inside the mark's zone, below. */
   --spacing-ledger-pad-r: calc(var(--spacing-flow) * 0.7);
+  /* The least room a business row keeps for its mark from `md` (client,
+   * 2026-10-14): the mark, the gap before it and the row's right padding —
+   * what sat beside the text before the mark was centred. The mark's zone
+   * takes all the width the text does not use and centres the mark in it, and
+   * this is its floor, so where the text has no slack the text column is
+   * exactly as wide as it was. The padding is --spacing-inset below `lg` and
+   * --spacing-ledger-pad-r from it, hence the pair. They follow those
+   * tokens, so changing any of them keeps the text's width. */
+  --spacing-ledger-mark-zone-md: calc(
+    var(--spacing-ledger-icon) + var(--spacing-flow) + var(--spacing-inset)
+  );
+  --spacing-ledger-mark-zone-lg: calc(
+    var(--spacing-ledger-icon) + var(--spacing-flow) + var(--spacing-ledger-pad-r)
+  );
   --spacing-tight: clamp(0.5rem, 0.4423rem + 0.2564vw, 0.75rem); /* 8 → 12 */
 
   /* The gap between a card's body and its footer — the rule above a "Know More",

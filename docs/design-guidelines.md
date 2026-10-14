@@ -902,8 +902,15 @@ an identical six-line accent span each.
 |---|---|---|
 | `ground` | `paper` \| `dark` | Which hairline the card hangs from — `--color-hairline-paper` or `--color-hairline-dark`. Follow the section's ground |
 | `inset` | `top` \| `block` | `pt-inset` for a card whose last element closes it; `py-inset` for a row in a stack of rows |
+| `frosted` | `boolean` | **`outlined` on paper only; does nothing elsewhere.** Frosted glass: `--color-surface-frosted` face, `--blur-frosted-card` + `--saturate-frosted-card` backdrop blur, `--color-outline-frosted` frame, `--shadow-frosted-card` elevation. Opt-in, off by default. On for the business pages' outlined cards (2026-10-14). The cards' `<Reveal>` must not keep `will-change` — see below |
 | `accentClassName` | a colour class | The accent's colour. **Omit to render no accent** — a card that is not interactive should not suggest it is |
 | `as` | `div` \| `article` \| `section` | Defaults to `div`, so a card that is not a self-contained composition is not announced as one |
+
+**`frosted` and `<Reveal>`.** `<Reveal>` keeps `will-change: opacity, transform` on its box,
+and an ancestor with `will-change: opacity` is a backdrop root, so a `backdrop-filter` inside
+it sees only what that ancestor contains and blurs nothing behind it. A reveal that wraps a
+frosted card therefore takes `will-change-auto!` (`<ValueGridLayout>` does it). Not visible
+with `prefers-reduced-motion: reduce`, which drops the hint: check in the normal-motion mode.
 
 The accent is `scaleX` from a left origin at `--duration-card`, `aria-hidden` (it repeats
 what a focus ring already says), and `group-focus-within` mirrors `group-hover`

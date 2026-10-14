@@ -33,6 +33,60 @@ Legend: `Reads` = the supporting docs to load for that item (beyond `/CLAUDE.md`
 | FE-02 | Design system foundation (tokens, fonts, primitives) | `features/02-design-system-foundation.md` | Swapnil Raj | 2026-08-04 |
 | FE-01 | Initial project setup | `features/01-initial-project-setup.md` | Swapnil Raj | 2026-08-04 |
 
+### Business Portfolio: the mark centred from `md` to `xl` (not a tracker item), 2026-10-14
+
+At the client's request, the mark in each Business Portfolio row stands centred in the room to
+the right of the text, from `md` (768) up to `xl` (1280). Below `md` and from `xl` up nothing
+changed. **Done on the user's instruction**; FE-05 stays In Progress.
+
+**How.** The text column is `flex-1`, so any wider right padding would narrow it and re-wrap
+the copy, which the client ruled out. From `md` to `xl` the row's gap and right padding are
+instead folded into the mark's own margin, half to each side: `(gap + padding) / 2`, as the new
+tokens `--spacing-ledger-mark-pad-md` and `-lg` (the padding is `--spacing-inset` at `md` and
+`--spacing-ledger-pad-r` at `lg`, so there are two). The text column is exactly as wide as
+before. `--spacing-ledger-pad-r` now applies from `xl`, not `lg`.
+
+**The shift is small, by geometry, not by mistake.** The mark moves left about 5–8px (e.g.
+339.8 → 334.5px at 1024), and sits with equal space either side. At these widths the text fills
+nearly the whole row, so the room right of it is only the gap, the mark and the padding, about
+100–150px. A 90px right padding would have narrowed the text column by about 65px at 1024.
+The client's own 90px trial in `theme.css` was replaced by this, and `--spacing-ledger-pad-r`
+is back to `calc(var(--spacing-flow) * 0.7)`. From `xl` the text has real slack (46ch measure
+in a wider column), where centring would move the mark further; that was not asked for.
+
+**Verified** on a production build: the text column's width is unchanged at 768, 900, 1023, 1024,
+1180 and 1279, and 1280, 1440 and 1920 match the old geometry to the pixel; the space left of the
+mark equals the space right of it at every width from 768 to 1279. `typecheck`, `lint`,
+`verify:guardrails` and `build` are clean.
+
+### Frosted cards on three business sections (not a tracker item), 2026-10-14
+
+At the user's instruction, the outlined cards of Solar Energy's "Our EPC And O&M
+Practices", Module Manufacturing's "Manufacturing Prowess" and Agri Waste-to-Energy's
+"Benefits of Waste-to-Energy" are frosted glass, so the dot grid does not show behind their
+copy. **Done on the user's instruction**; FE-05 stays In Progress. The prompt came from the
+Claude-in-Chrome extension; its values are used as given.
+
+**Opt-in.** `<Card frosted>` (outlined, on paper only), reached through `<ValueGrid frosted>`.
+Switched on in `app/solar-energy/page.tsx`, `app/waste-to-energy/page.tsx` and, for the
+prowess cards only, in `prowess` on `app/module-manufacturing/page.tsx`. Product Downloads
+is not a card and is unchanged. The values are tokens in `theme.css`:
+`--color-surface-frosted`, `--color-outline-frosted`, `--shadow-frosted-card`,
+`--blur-frosted-card` and `--saturate-frosted-card`. The hairline cards (Solar Cell's
+Highlights, About Us's principles) and every other outlined card are unchanged.
+
+**A trap, found by measuring.** `<Reveal>` keeps `will-change: opacity, transform` for good,
+which makes it a backdrop root, so the cards' blur saw nothing behind them and the dots
+stayed fully visible (sd 0.7–0.8 over an empty strip of card). Reduced-motion hides this,
+as it drops the hint. The grid's reveal now takes `will-change-auto!` when the glass is
+drawn (`<ValueGridLayout>`), and the same strip is uniform. The fade-in is unchanged; the
+blur arrives as it settles. See `design-guidelines.md` §4's Card section.
+
+**Verified** on a production build in normal-motion Chrome: exactly 13 cards are frosted
+(4 + 3 + 6); Core Beliefs' cards, About Us's, Solar Cell's and Product Downloads are
+unchanged; no horizontal scroll at 360, 768, 1024 or 1920. `typecheck`, `lint`,
+`verify:guardrails` and `build` are clean.
+
 ### Light sections on nine more pages (not a tracker item), 2026-10-14
 
 The client asked for the homepage's mix of dark and light sections on nine more pages.

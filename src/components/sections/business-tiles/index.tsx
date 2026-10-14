@@ -185,8 +185,13 @@ export function BusinessTiles({ eyebrow, tiles, snap = false }: BusinessTilesPro
                     // Every row's mark stands off the row's right edge by the
                     // same margin, the padding the upcoming row's panel brought
                     // with it — the client's call of 2026-10-14. `inset` up to
-                    // `lg`, then a larger step that grows with the screen.
-                    'pr-inset lg:pr-ledger-pad-r',
+                    // `md`.
+                    //
+                    // From `md` there is neither gap nor padding on the row:
+                    // the mark's own zone, below, counts both (the client,
+                    // 2026-10-14), so the mark can stand centred in the room
+                    // the text leaves.
+                    'pr-inset md:gap-x-0 md:pr-0',
                     // The one row that is not yet operational carries its own
                     // ground. Left padding comes with it: without it the copy
                     // would start hard against the panel's edge, where every
@@ -198,7 +203,7 @@ export function BusinessTiles({ eyebrow, tiles, snap = false }: BusinessTilesPro
                       rather than pushing the mark off the row — a flex item's
                       floor is its content's min-content width until you say
                       otherwise. */}
-                  <div className="flex min-w-0 flex-1 flex-col">
+                  <div className="flex min-w-0 flex-1 flex-col md:flex-initial">
                     <h3
                       className={cn(
                         ledgerTitle({ variant: TITLE_VARIANT }),
@@ -313,12 +318,25 @@ export function BusinessTiles({ eyebrow, tiles, snap = false }: BusinessTilesPro
                     stretched over the row.
                   */}
                   {tile.icon !== null && (
-                    <Image
-                      src={tile.icon}
-                      alt=""
-                      sizes={SIZES_BUSINESS_ICON}
-                      className="pointer-events-none h-auto w-ledger-icon shrink-0 self-center"
-                    />
+                    <div
+                      className={cn(
+                        'flex shrink-0 justify-center self-center',
+                        // From `md` the text column is as wide as its content
+                        // (`flex-initial`, above), not the whole row, and this
+                        // zone takes everything left of it and centres the mark
+                        // in that room (the client, 2026-10-14). Its floor is
+                        // the room the mark had beside the text before, so
+                        // where the text has no slack it keeps its width.
+                        'md:min-w-ledger-mark-zone-md md:flex-1 lg:min-w-ledger-mark-zone-lg',
+                      )}
+                    >
+                      <Image
+                        src={tile.icon}
+                        alt=""
+                        sizes={SIZES_BUSINESS_ICON}
+                        className="pointer-events-none h-auto w-ledger-icon shrink-0"
+                      />
+                    </div>
                   )}
                 </Card>
               </Reveal>
