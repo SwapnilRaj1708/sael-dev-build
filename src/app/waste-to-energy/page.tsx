@@ -43,12 +43,12 @@ const TECHNOLOGY_MARKS = [
 ];
 
 const BENEFIT_MARKS = [
-  <CycleMark key="cycle" />,
-  <RuralMark key="rural" />,
-  <AirQualityMark key="air-quality" />,
-  <FossilMark key="fossil" />,
-  <SteadyMark key="steady" />,
-  <SheafMark key="sheaf" />,
+  <CycleMark key="cycle" ground="paper" />,
+  <RuralMark key="rural" ground="paper" />,
+  <AirQualityMark key="air-quality" ground="paper" />,
+  <FossilMark key="fossil" ground="paper" />,
+  <SteadyMark key="steady" ground="paper" />,
+  <SheafMark key="sheaf" ground="paper" />,
 ];
 
 const technologyItems: CapabilityItem[] = wasteToEnergyTechnology.items.map((item, index) => ({
@@ -82,7 +82,9 @@ export default function WasteToEnergyPage() {
   return (
     <div data-snap-sections className="-mt-header business-ramp-agri lg:mt-0">
       <PageHero titleGradient="agri" {...wasteToEnergyHero} snap />
-      <ProseSplit titleGradient="agri" {...wasteToEnergyOverview} snap />
+      {/* Overview and "Why Waste-to-Energy?" on paper, the rest on the black ground — the
+          client's alternation of 2026-10-14, as the homepage alternates. */}
+      <ProseSplit titleGradient="agri" {...wasteToEnergyOverview} ground="paper" snap />
       <ProjectsMap
         titleGradient="agri"
         {...wasteToEnergyProjects}
@@ -106,6 +108,7 @@ export default function WasteToEnergyPage() {
         // Six cards as two rows of three from `xl`, so they fit the one
         // screen the page snaps to.
         columns="thirds"
+        ground="paper"
         snap
       />
     </div>

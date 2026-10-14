@@ -33,6 +33,12 @@ export interface StorySplitProps {
    * one edge. Below `lg` the photograph always leads, beside the heading.
    */
   side?: 'start' | 'end';
+  /**
+   * `dark` is the page's default. `paper` sets the eyebrow, heading and
+   * story in their paper ramps and ink — the Public Health story, on paper
+   * at the client's request of 2026-10-14.
+   */
+  ground?: 'dark' | 'paper';
   /** Opt into the page's section snapping. See `data-snap-sections`. */
   snap?: boolean;
 }
@@ -69,16 +75,18 @@ export function StorySplit({
   body,
   media,
   side = 'start',
+  ground = 'dark',
   snap = false,
 }: StorySplitProps) {
   const titleId = `${id}-title`;
+  const paper = ground === 'paper';
   const headingOrder = eyebrow === undefined ? 1 : 2;
 
   return (
     <Section
       id={id}
       aria-labelledby={titleId}
-      background="black-dots"
+      background={paper ? 'paper-dots' : 'black-dots'}
       data-snap-section
       className={cn(
         'flex items-center pt-[calc(var(--spacing-header)+var(--spacing-section-y))] lg:pt-section-y',
@@ -121,14 +129,14 @@ export function StorySplit({
         >
           {eyebrow !== undefined && (
             <Reveal order={1}>
-              <Eyebrow tone="bright">{eyebrow}</Eyebrow>
+              <Eyebrow tone={paper ? 'deep' : 'bright'}>{eyebrow}</Eyebrow>
             </Reveal>
           )}
 
           <Reveal order={headingOrder}>
             <DisplayHeading
               id={titleId}
-              ground="dark"
+              ground={ground}
               // The display size from `lg`; beside the thumbnail below it, a
               // step down so the heading is not a column of single words.
               className="w-fit text-story-title text-balance lg:text-display"
@@ -145,7 +153,12 @@ export function StorySplit({
             side === 'start' ? 'lg:col-start-2' : 'lg:col-start-1',
           )}
         >
-          <p className="max-w-(--measure) text-body-sm text-pretty text-body-on-dark lg:text-body">
+          <p
+            className={cn(
+              'max-w-(--measure) text-body-sm text-pretty lg:text-body',
+              paper ? 'text-body-base' : 'text-body-on-dark',
+            )}
+          >
             {body}
           </p>
         </Reveal>

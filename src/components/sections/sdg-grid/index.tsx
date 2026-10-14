@@ -27,6 +27,13 @@ export interface SdgGridProps {
   /** In numeric order. The grid does not sort them. */
   goals: readonly SdgGoal[];
   /**
+   * `dark` is the site's default. `paper` sets the label and heading in their
+   * paper ramps and gives the tiles the site's own focus ring, which reads on
+   * paper where the dark ground's white one does not — Our Key ESG Metrics,
+   * since 2026-10-14. The icons are the UN's either way.
+   */
+  ground?: 'dark' | 'paper';
+  /**
    * Opt into the page's section snapping — a screen tall, content centred.
    * See `data-snap-sections` in globals.css.
    */
@@ -73,12 +80,13 @@ export interface SdgGridProps {
  *
  * A Server Component; only `<Reveal>` is client.
  */
-export function SdgGrid({ eyebrow, title, goals, snap = false }: SdgGridProps) {
+export function SdgGrid({ eyebrow, title, goals, ground = 'dark', snap = false }: SdgGridProps) {
   const headingOrder = eyebrow === undefined ? 0 : 1;
+  const paper = ground === 'paper';
 
   return (
     <Section
-      background="black-dots"
+      background={paper ? 'paper-dots' : 'black-dots'}
       spacing="tight"
       data-snap-section
       className={cn(snap && 'flex min-h-viewport snap-start items-center')}
@@ -87,12 +95,12 @@ export function SdgGrid({ eyebrow, title, goals, snap = false }: SdgGridProps) {
         <div className="flex flex-col gap-stack">
           {eyebrow !== undefined && (
             <Reveal order={0}>
-              <Eyebrow tone="bright">{eyebrow}</Eyebrow>
+              <Eyebrow tone={paper ? 'deep' : 'bright'}>{eyebrow}</Eyebrow>
             </Reveal>
           )}
 
           <Reveal order={headingOrder}>
-            <DisplayHeading ground="dark" className="w-fit">
+            <DisplayHeading ground={ground} className="w-fit">
               {title}
             </DisplayHeading>
           </Reveal>
@@ -105,7 +113,10 @@ export function SdgGrid({ eyebrow, title, goals, snap = false }: SdgGridProps) {
                 <Link
                   href={goal.href}
                   aria-label={`SDG ${String(goal.number)}: ${goal.title}`}
-                  className="relative block aspect-square outline-offset-4 focus-visible:outline-white"
+                  className={cn(
+                    'relative block aspect-square outline-offset-4',
+                    !paper && 'focus-visible:outline-white',
+                  )}
                 >
                   <MediaFrame
                     image={goal.icon}

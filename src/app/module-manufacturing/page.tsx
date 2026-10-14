@@ -29,9 +29,9 @@ export const metadata: Metadata = buildMetadata({
 
 /** Drawn marks, in card order — see `business-marks.tsx`. */
 const PROWESS_MARKS = [
-  <CertificateMark key="certificate" />,
-  <DataMark key="data" />,
-  <InspectionMark key="inspection" />,
+  <CertificateMark key="certificate" ground="paper" />,
+  <DataMark key="data" ground="paper" />,
+  <InspectionMark key="inspection" ground="paper" />,
 ];
 
 const prowessItems: ValueGridItem[] = moduleProwess.items.map((item, index) => ({
@@ -66,7 +66,9 @@ export default function ModuleManufacturingPage() {
   return (
     <div data-snap-sections className="-mt-header business-ramp-module lg:mt-0">
       <PageHero titleGradient="module" {...moduleHero} snap />
-      <ProseSplit titleGradient="module" {...moduleOverview} snap />
+      {/* Overview and the downloads and prowess on paper, the rest on the black ground — the
+          client's alternation of 2026-10-14, as the homepage alternates. */}
+      <ProseSplit titleGradient="module" {...moduleOverview} ground="paper" snap />
       <ProjectsMap titleGradient="module" {...moduleProjects} sites={moduleSites} snap />
       <DownloadsProwess
         downloads={{ titleGradient: 'module', ...moduleDownloads }}
@@ -76,6 +78,7 @@ export default function ModuleManufacturingPage() {
           items: prowessItems,
           variant: 'outlined',
         }}
+        ground="paper"
         snap
       />
     </div>

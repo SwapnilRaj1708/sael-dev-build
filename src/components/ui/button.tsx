@@ -86,6 +86,14 @@ const button = cva(
           'rounded-pill gradient-outline text-white',
           'hover:brightness-(--brightness-cta-hover) focus-visible:outline-white',
         ],
+        /**
+         * `pill` on paper: the `deep` ramp round the paper ground, an ink
+         * label, and the site's own focus ring, which reads on paper. For
+         * the ESG Report link under a belief that is drawn on paper
+         * (2026-10-14). The hover is paper's link red rather than the
+         * brightness lift, which barely moves a near-white pill.
+         */
+        pillOnPaper: 'rounded-pill gradient-outline-paper text-ink hover:text-accent-hover',
       },
       size: {
         sm: 'text-cta px-4 py-2 lg:px-5 lg:py-2.5',

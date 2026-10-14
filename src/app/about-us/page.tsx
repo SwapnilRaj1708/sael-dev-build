@@ -47,10 +47,8 @@ const pillarItems: ValueGridItem[] = strategicPillars.items.map((pillar, index) 
 const principleItems: ValueGridItem[] = guidingPrinciples.items.map((principle) => ({
   name: principle.name,
   body: principle.body,
-  // Supplied 2026-09-10. <ValueMark> inverts them to white — they are drawn
-  // in near-black on transparent and would be invisible on the card as they
-  // come.
-  mark: <ValueMark image={principle.icon} />,
+  // The set's coloured variants, drawn as supplied on the paper ground.
+  mark: <ValueMark image={principle.icon} ground="paper" />,
 }));
 
 /**
@@ -111,6 +109,9 @@ export default function AboutUsPage() {
         // The accent that fills across the hairline on hover — the client's
         // ask of 2026-09-17, matching the team cards.
         accent
+        // On paper, the client's alternation of 2026-10-14, as the homepage
+        // alternates; the sections above it stay on the black ground.
+        ground="paper"
         snap
       />
     </div>

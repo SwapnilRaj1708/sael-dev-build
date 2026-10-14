@@ -28,10 +28,10 @@ export const metadata: Metadata = buildMetadata({
 
 /** Drawn marks, in entry order — see `business-marks.tsx`. */
 const HIGHLIGHT_MARKS = [
-  <ChainMark key="chain" />,
-  <AutomationMark key="automation" />,
-  <TargetMark key="target" />,
-  <HandshakeMark key="handshake" />,
+  <ChainMark key="chain" ground="paper" />,
+  <AutomationMark key="automation" ground="paper" />,
+  <TargetMark key="target" ground="paper" />,
+  <HandshakeMark key="handshake" ground="paper" />,
 ];
 
 const highlightItems: CapabilityItem[] = solarCellHighlights.items.map((item, index) => ({
@@ -59,7 +59,9 @@ export default function SolarCellManufacturingPage() {
   return (
     <div data-snap-sections className="-mt-header business-ramp-cell lg:mt-0">
       <PageHero titleGradient="cell" {...solarCellHero} snap />
-      <ProseSplit titleGradient="cell" {...solarCellOverview} snap />
+      {/* Overview and Highlights on paper, the rest on the black ground — the
+          client's alternation of 2026-10-14, as the homepage alternates. */}
+      <ProseSplit titleGradient="cell" {...solarCellOverview} ground="paper" snap />
       <ProjectsMap
         titleGradient="cell"
         eyebrow={solarCellProjects.eyebrow}
@@ -76,6 +78,7 @@ export default function SolarCellManufacturingPage() {
         title={solarCellHighlights.title}
         items={highlightItems}
         media={solarCellHighlights.media}
+        ground="paper"
         snap
       />
     </div>

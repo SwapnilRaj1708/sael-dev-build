@@ -2,10 +2,10 @@ import type { StaticImageData } from 'next/image';
 import type { ReactNode } from 'react';
 import { Card } from '@/components/ui/card';
 import { DisplayHeading, type BusinessGradient } from '@/components/ui/display-heading';
-import { Eyebrow } from '@/components/ui/eyebrow';
+import { Eyebrow, type EyebrowTone } from '@/components/ui/eyebrow';
 import { MediaFrame } from '@/components/ui/media-frame';
 import { Reveal } from '@/components/ui/reveal';
-import { Section } from '@/components/ui/section';
+import { Section, type SectionProps } from '@/components/ui/section';
 import { cn } from '@/lib/utils/cn';
 import { SIZES_BUSINESS_EXECUTION_MEDIA } from '@/lib/utils/image-sizes';
 
@@ -23,6 +23,9 @@ export interface CapabilityItem {
    */
   mark?: ReactNode;
 }
+
+/** The ground the section is drawn on. */
+export type CapabilitySplitGround = 'dark' | 'paper';
 
 export interface CapabilitySplitMedia {
   image: StaticImageData | null;
@@ -43,6 +46,13 @@ export interface CapabilitySplitProps {
   items: readonly CapabilityItem[];
   /** The portrait photograph beside the list. */
   media: CapabilitySplitMedia;
+  /**
+   * `dark` is the site's default. `paper` is for a page that alternates its
+   * grounds — Solar Cell Manufacturing's "Highlights" (2026-10-14) — and
+   * picks the ramps, inks and rules to match. The marks are the caller's:
+   * pass each its own `ground="paper"` too.
+   */
+  ground?: CapabilitySplitGround;
   /**
    * Opt into the page's section snapping — a screen tall, content centred,
    * on the tight rhythm. See `data-snap-sections` in globals.css.
@@ -87,19 +97,51 @@ export interface CapabilitySplitProps {
  * A Server Component. The rows are not links; their hover accent is CSS,
  * from <Card>.
  */
+/**
+ * Everything that follows from the ground, decided once — the same pairs
+ * `<ValueGrid>` draws its cards in.
+ */
+const GROUND: Record<
+  CapabilitySplitGround,
+  {
+    section: SectionProps['background'];
+    eyebrow: EyebrowTone;
+    name: string;
+    body: string;
+    accent: string;
+  }
+> = {
+  dark: {
+    section: 'black-dots',
+    eyebrow: 'bright',
+    name: 'text-white',
+    body: 'text-on-dark-soft',
+    accent: 'bg-(image:--gradient-eyebrow-bright)',
+  },
+  paper: {
+    section: 'paper-dots',
+    eyebrow: 'deep',
+    name: 'text-ink',
+    body: 'text-body-soft',
+    accent: 'bg-(image:--gradient-eyebrow-deep)',
+  },
+};
+
 export function CapabilitySplit({
   eyebrow,
   title,
   titleGradient,
   items,
   media,
+  ground = 'dark',
   snap = false,
 }: CapabilitySplitProps) {
   const twoUp = snap && items.length >= 4;
+  const tone = GROUND[ground];
 
   return (
     <Section
-      background="black-dots"
+      background={tone.section}
       spacing={snap ? 'tight' : 'default'}
       data-snap-section
       className={cn(snap && 'flex min-h-viewport snap-start items-center')}
@@ -107,11 +149,11 @@ export function CapabilitySplit({
       <div className="flex w-full flex-col gap-flow">
         <div className="flex flex-col gap-stack">
           <Reveal order={0}>
-            <Eyebrow tone="bright">{eyebrow}</Eyebrow>
+            <Eyebrow tone={tone.eyebrow}>{eyebrow}</Eyebrow>
           </Reveal>
 
           <Reveal order={1}>
-            <DisplayHeading ground="dark" business={titleGradient}>
+            <DisplayHeading ground={ground} business={titleGradient}>
               {title}
             </DisplayHeading>
           </Reveal>
@@ -134,12 +176,12 @@ export function CapabilitySplit({
               <Card
                 key={item.name ?? item.body}
                 as="article"
-                ground="dark"
+                ground={ground}
                 inset="top"
                 // The accent that fills across the hairline on hover — the same
                 // one the guiding principles and the team cards carry, on the
                 // client's ask of 2026-09-21.
-                accentClassName="bg-(image:--gradient-eyebrow-bright)"
+                accentClassName={tone.accent}
               >
                 <div className="flex w-full flex-col gap-tight">
                   {/* Mark, then name, then copy — the order the value grid draws
@@ -147,9 +189,11 @@ export function CapabilitySplit({
                       the two sections to match, 2026-09-21. */}
                   <div className="flex flex-col items-center gap-tight text-center">
                     {item.mark}
-                    {item.name !== undefined && <h3 className="text-h3 text-white">{item.name}</h3>}
+                    {item.name !== undefined && (
+                      <h3 className={cn('text-h3', tone.name)}>{item.name}</h3>
+                    )}
                   </div>
-                  <p className="text-body-sm text-pretty text-on-dark-soft">{item.body}</p>
+                  <p className={cn('text-body-sm text-pretty', tone.body)}>{item.body}</p>
                 </div>
               </Card>
             ))}

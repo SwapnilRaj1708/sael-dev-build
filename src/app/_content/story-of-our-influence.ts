@@ -96,5 +96,7 @@ export const stories: readonly Omit<StorySplitProps, 'snap'>[] = [
       pending: 'story-of-our-influence/public-health',
     },
     side: 'start',
+    // On paper, the client's ask of 2026-10-14; the first two stay dark.
+    ground: 'paper',
   },
 ];

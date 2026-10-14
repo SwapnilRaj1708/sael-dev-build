@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import biodiversityIcon from '@/assets/icons/our-biodiversity-commitment/animated/39b-biodiversity-butterfly-white-animated.svg';
+import biodiversityIcon from '@/assets/icons/our-biodiversity-commitment/animated/39b-biodiversity-butterfly-notile-animated.svg';
 import governanceIcon from '@/assets/icons/sustainability-governance/animated/38a-governance-pillars-white-animated.svg';
-import stewardshipIcon from '@/assets/icons/environmental-stewardship/animated/36b-stewardship-hand-leaf-white-animated.svg';
+import stewardshipIcon from '@/assets/icons/environmental-stewardship/animated/36b-stewardship-hand-leaf-notile-animated.svg';
 import socialIcon from '@/assets/icons/our-social-impact/animated/37b-social-community-heart-white-animated.svg';
 import { EsgReportLink } from '@/app/_lib/esg-report-link';
 import { BeliefStack, type Belief } from '@/components/sections/belief-stack';
@@ -24,9 +24,13 @@ export const metadata: Metadata = buildMetadata({
  * content file is data — the division every page draws.
  *
  * The supplied animated icons (36-39, 2026-10-08), which replaced lucide's
- * leaf, users, landmark and bird. Fixed-colour white files that animate
- * themselves on a 3.5s loop, sized to sit in the badge. Decorative: the badge
- * they sit in is `aria-hidden`, and the heading beside it names the belief.
+ * leaf, users, landmark and bird. Fixed-colour files that animate themselves
+ * on a 3.5s loop, sized to sit in the badge. Decorative: the badge they sit
+ * in is `aria-hidden`, and the heading beside it names the belief.
+ *
+ * Each in the variant for its belief's ground: the set's coloured no-tile
+ * file for the first and last, which are on paper since 2026-10-14, and the
+ * white one for the two between.
  */
 const BELIEF_ICON_CLASS = 'size-14 object-contain lg:size-16';
 
@@ -76,7 +80,8 @@ export default function OurCoreBeliefsPage() {
   return (
     <div data-snap-sections className="-mt-header lg:mt-0">
       <PageHero {...coreBeliefsHero} snap />
-      <BeliefStack beliefs={beliefItems} action={<EsgReportLink />} snap />
+      {/* The pill sits under the last belief, on that belief's paper. */}
+      <BeliefStack beliefs={beliefItems} action={<EsgReportLink ground="paper" />} snap />
     </div>
   );
 }

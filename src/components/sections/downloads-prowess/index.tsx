@@ -12,6 +12,12 @@ export interface DownloadsProwessProps {
   /** The cards under them — "Manufacturing Prowess". */
   prowess: ValueGridLayoutProps;
   /**
+   * The section's ground, and both halves' — set here once rather than on
+   * each, so the two cannot disagree. `paper` since 2026-10-14. The prowess
+   * marks are the caller's: pass each its own `ground` too.
+   */
+  ground?: 'dark' | 'paper';
+  /**
    * Opt into the page's section snapping — a screen tall, content centred,
    * on the tight rhythm. See `data-snap-sections` in globals.css.
    */
@@ -40,17 +46,22 @@ export interface DownloadsProwessProps {
  *
  * A Server Component; only the reveals are client.
  */
-export function DownloadsProwess({ downloads, prowess, snap = false }: DownloadsProwessProps) {
+export function DownloadsProwess({
+  downloads,
+  prowess,
+  ground = 'dark',
+  snap = false,
+}: DownloadsProwessProps) {
   return (
     <Section
-      background="black-dots"
+      background={ground === 'paper' ? 'paper-dots' : 'black-dots'}
       spacing={snap ? 'tight' : 'default'}
       data-snap-section
       className={cn('overflow-x-clip', snap && 'flex min-h-viewport snap-start items-center')}
     >
       <div className="flex w-full flex-col gap-section-y-tight">
-        <ProductDownloadsLayout {...downloads} />
-        <ValueGridLayout {...prowess} />
+        <ProductDownloadsLayout {...downloads} ground={ground} />
+        <ValueGridLayout {...prowess} ground={ground} />
       </div>
     </Section>
   );

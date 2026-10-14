@@ -88,6 +88,10 @@ export function DisplayHeading({
               // short heading only the first part of its ramp.
               'w-fit gradient-text text-display',
               BUSINESS_GRADIENT_CLASS[business],
+              // On paper, a very slight shadow to give the bright ramp an
+              // edge — a trial (2026-10-14). See --drop-shadow-heading-paper.
+              // Paper unless told otherwise, as the ground's own default.
+              (ground ?? 'paper') === 'paper' && 'drop-shadow-heading-paper',
             ],
         className,
       )}

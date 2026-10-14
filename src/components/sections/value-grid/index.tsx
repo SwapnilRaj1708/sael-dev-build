@@ -83,8 +83,8 @@ export interface ValueGridProps {
    * `dark` is the site's default and needs no instruction
    * (docs/design-guidelines.md §8). `paper` is for a page that alternates its
    * grounds deliberately, and picks the ramps and inks to match. The marks
-   * are the caller's: a drawn mark defaults to white and needs `text-ink`
-   * passed on paper.
+   * are the caller's: on paper, pass each mark its `ground="paper"` too, so it
+   * draws the icon set's coloured variant rather than the white one.
    */
   ground?: ValueGridGround;
   /**
@@ -116,6 +116,8 @@ const GROUND: Record<
     name: string;
     body: string;
     ordinal: string;
+    /** The ramp the hover accent fills in — the eyebrow's, on either ground. */
+    accent: string;
   }
 > = {
   dark: {
@@ -124,6 +126,7 @@ const GROUND: Record<
     name: 'text-white',
     body: 'text-on-dark-soft',
     ordinal: 'text-on-dark-faint',
+    accent: 'bg-(image:--gradient-eyebrow-bright)',
   },
   paper: {
     section: 'paper-dots',
@@ -131,19 +134,20 @@ const GROUND: Record<
     name: 'text-ink',
     body: 'text-body-soft',
     ordinal: 'text-meta-paper',
+    accent: 'bg-(image:--gradient-eyebrow-deep)',
   },
 };
 
 /**
  * The mark at the head of a value card.
  *
- * The eight guiding-principle icons are monochrome line art drawn in near-black
- * on transparent, so on the black card they would be invisible as supplied.
- * `brightness-0 invert` crushes any colour to black and then flips it to white
- * — the same treatment the homepage's goal marks take, and the reason it is
- * that pair rather than the design file's `invert(1) hue-rotate(180deg)`: hue
- * rotation exists to preserve colour through an inversion, and there is none
- * here to preserve.
+ * On the dark ground, `brightness-0 invert` crushes any colour to black and
+ * then flips it to white — the same treatment the homepage's goal marks take,
+ * and the reason it is that pair rather than the design file's `invert(1)
+ * hue-rotate(180deg)`: hue rotation exists to preserve colour through an
+ * inversion, and there is none here to preserve. On paper the artwork is
+ * drawn as supplied, so pass the icon set's coloured no-tile variant there
+ * (About Us's guiding principles, on paper since 2026-10-14).
  *
  * Always decorative. The card's heading is the mark's name, so announcing it
  * again would be repetition — `alt=""` and `aria-hidden` together, which is
@@ -155,7 +159,15 @@ const GROUND: Record<
  * has not been supplied; it then holds the same box as a plain placeholder,
  * which is the bargain `<MediaFrame>` makes for photographs.
  */
-export function ValueMark({ image, pending }: { image: StaticImageData | null; pending?: string }) {
+export function ValueMark({
+  image,
+  pending,
+  ground = 'dark',
+}: {
+  image: StaticImageData | null;
+  pending?: string;
+  ground?: ValueGridGround;
+}) {
   if (image === null) {
     return (
       <span
@@ -171,7 +183,10 @@ export function ValueMark({ image, pending }: { image: StaticImageData | null; p
       src={image}
       alt=""
       aria-hidden
-      className="size-(--value-mark-size) shrink-0 object-contain brightness-0 invert"
+      className={cn(
+        'size-(--value-mark-size) shrink-0 object-contain',
+        ground === 'dark' && 'brightness-0 invert',
+      )}
     />
   );
 }
@@ -277,9 +292,7 @@ export function ValueGridLayout({
               ground={ground}
               shape={variant}
               inset={outlined ? 'none' : 'top'}
-              accentClassName={
-                accent && !outlined ? 'bg-(image:--gradient-eyebrow-bright)' : undefined
-              }
+              accentClassName={accent && !outlined ? tone.accent : undefined}
               className={cn(
                 balance && ['grow', BASIS_CLASS[columns], 'max-w-(--value-grid-card-max)'],
               )}

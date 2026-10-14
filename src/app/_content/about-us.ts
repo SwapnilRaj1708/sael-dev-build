@@ -1,12 +1,12 @@
 import type { StaticImageData } from 'next/image';
-import customerIcon from '@/assets/icons/customer-centric/animated/4a-customer-target-white-animated.svg';
-import entrepreneurialIcon from '@/assets/icons/entrepreneurial/animated/5a-entrepreneurial-idea-white-animated.svg';
-import teamworkIcon from '@/assets/icons/teamwork/animated/6c-teamwork-network-white-animated.svg';
-import trustIcon from '@/assets/icons/trust-and-respect/animated/7a-trust-handshake-check-white-animated.svg';
-import integrityIcon from '@/assets/icons/integrity/animated/8a-integrity-handshake-white-animated.svg';
-import ownerIcon from '@/assets/icons/owner-mind-set/animated/9a-owner-mind-white-animated.svg';
-import outcomeIcon from '@/assets/icons/outcome-focused/animated/10a-outcome-delegation-white-animated.svg';
-import learningIcon from '@/assets/icons/continuous-learning/animated/11a-learning-brain-circuit-white-animated.svg';
+import customerIcon from '@/assets/icons/customer-centric/animated/4a-customer-target-notile-animated.svg';
+import entrepreneurialIcon from '@/assets/icons/entrepreneurial/animated/5a-entrepreneurial-idea-notile-animated.svg';
+import teamworkIcon from '@/assets/icons/teamwork/animated/6c-teamwork-network-notile-animated.svg';
+import trustIcon from '@/assets/icons/trust-and-respect/animated/7a-trust-handshake-check-notile-animated.svg';
+import integrityIcon from '@/assets/icons/integrity/animated/8a-integrity-handshake-notile-animated.svg';
+import ownerIcon from '@/assets/icons/owner-mind-set/animated/9a-owner-mind-notile-animated.svg';
+import outcomeIcon from '@/assets/icons/outcome-focused/animated/10a-outcome-delegation-notile-animated.svg';
+import learningIcon from '@/assets/icons/continuous-learning/animated/11a-learning-brain-circuit-notile-animated.svg';
 import type { CutoutSplitProps } from '@/components/sections/cutout-split';
 import type { PageHeroProps } from '@/components/sections/page-hero';
 import type { ProseSplitProps } from '@/components/sections/prose-split';
@@ -171,7 +171,8 @@ export const strategicPillars: {
 /**
  * The eight principles, in the design's own order, each with its animated icon
  * (2026-10-08, icons 4–11 of the supplied set). They replaced the CDN's
- * `principle-icon-1` … `-8` WebPs, which were paired positionally.
+ * `principle-icon-1` … `-8` WebPs, which were paired positionally. The
+ * coloured no-tile variants since 2026-10-14, when the section went to paper.
  */
 export const guidingPrinciples: {
   eyebrow: string;

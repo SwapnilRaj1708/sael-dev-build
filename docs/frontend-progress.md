@@ -33,6 +33,48 @@ Legend: `Reads` = the supporting docs to load for that item (beyond `/CLAUDE.md`
 | FE-02 | Design system foundation (tokens, fonts, primitives) | `features/02-design-system-foundation.md` | Swapnil Raj | 2026-08-04 |
 | FE-01 | Initial project setup | `features/01-initial-project-setup.md` | Swapnil Raj | 2026-08-04 |
 
+### Light sections on nine more pages (not a tracker item), 2026-10-14
+
+The client asked for the homepage's mix of dark and light sections on nine more pages.
+**Done on the user's instruction**; FE-05 stays In Progress. The fifteen sections now on
+`paper-dots` are listed in `design-guidelines.md` §1, next to the homepage's. Every other
+section stays dark. Sixteen were asked for. Career's "Career at SAEL" was built light and
+then put back to dark the same day, on the user's instruction.
+
+**How.** Each section takes `ground="paper"`. `<ProseSplit>`, `<ValueGrid>` and
+`<GalleryGrid>` already had the prop. `<CapabilitySplit>`, `<ProductDownloads>` (and its
+layout), `<DownloadsProwess>`, `<StorySplit>`, `<SdgGrid>` and `<BeliefSection>` (via the
+belief's own `ground`) gained it. All of them default to `dark`, so no other call site
+changes. Each section's eyebrow, heading, copy, rules, card outlines, hover accent and hover
+light follow the ground.
+
+**Three things the client has not seen and should approve:**
+
+- **Business headings on paper.** The business pages' headings and eyebrows are in each
+  business's ledger ramp. **On trial, on the user's instruction:** the paper sections use
+  that same ramp, unchanged, to judge whether it reads before anything is put to the
+  client. Solar's and agri's yellow ends are 1.2–1.3:1 on paper. If it does not read, the
+  fallback is ready and unused: `--gradient-ledger-*-deep` darkens each stop (hue and
+  saturation held) to 4.5:1, which turns those two yellow ends olive (`#827503`,
+  `#7c7707`). The switch is described at `business-ramp-*` in globals.css. **Also on
+  trial:** a very slight shadow under each business heading on paper,
+  `--drop-shadow-heading-paper` (0 1px 1px, ink at 22%), applied by `<DisplayHeading>`.
+  It is a `drop-shadow` filter because a `text-shadow` paints over clipped gradient text.
+  It gives the pale letters an edge without changing their contrast.
+  `business-ramp-*` also carries the paper hover glows, so paper cards keep the
+  business's colour.
+- **Icons on paper are the coloured no-tile variants** from the supplied set (brand red →
+  purple), not the white ones. They are not the business colour. The other choice was the
+  white file filtered to black, a one-line change in each marks file. The 34 no-tile files
+  newly in use were given the white files' loop edit (`asset-inventory.md` §3).
+- **The ESG Report pill** under Our Biodiversity Commitment sits on paper now: a new
+  `pillOnPaper` button variant, with the `deep` ramp outline, an ink label and a red hover.
+
+**Verified** on a production build (`next start`, headless Chrome at 1440 × 900 and 360 ×
+780): each of the fifteen sections renders on paper and no others do, section heights are
+unchanged, and nothing scrolls sideways. `typecheck`, `lint`, `verify:guardrails` and
+`build` are clean.
+
 ### Module Manufacturing: downloads and prowess as one section (not a tracker item), 2026-10-12
 
 At the client's request, Product Downloads and Manufacturing Prowess are one section,

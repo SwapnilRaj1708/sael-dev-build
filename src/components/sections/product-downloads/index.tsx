@@ -24,6 +24,12 @@ export interface ProductDownloadsProps {
   titleGradient?: BusinessGradient;
   items: readonly ProductDownload[];
   /**
+   * `dark` is the site's default. `paper` sets the heading block and the
+   * rows in their paper ramps and inks — Module Manufacturing's downloads,
+   * inside `<DownloadsProwess>`, since 2026-10-14.
+   */
+  ground?: 'dark' | 'paper';
+  /**
    * `tight` for a block between two taller sections. Defaults to `tight` on
    * a snapping section and `default` otherwise.
    */
@@ -68,7 +74,7 @@ export interface ProductDownloadsProps {
 export function ProductDownloads({ spacing, snap = false, ...props }: ProductDownloadsProps) {
   return (
     <Section
-      background="black-dots"
+      background={props.ground === 'paper' ? 'paper-dots' : 'black-dots'}
       spacing={spacing ?? (snap ? 'tight' : 'default')}
       data-snap-section
       className={cn(snap && 'flex min-h-viewport snap-start items-center')}
@@ -93,6 +99,7 @@ export function ProductDownloadsLayout({
   title,
   titleGradient,
   items,
+  ground = 'dark',
 }: ProductDownloadsLayoutProps) {
   return (
     <div
@@ -104,12 +111,12 @@ export function ProductDownloadsLayout({
       <div className="flex flex-col gap-stack">
         {eyebrow !== undefined && (
           <Reveal order={0}>
-            <Eyebrow tone="bright">{eyebrow}</Eyebrow>
+            <Eyebrow tone={ground === 'paper' ? 'deep' : 'bright'}>{eyebrow}</Eyebrow>
           </Reveal>
         )}
 
         <Reveal order={eyebrow === undefined ? 0 : 1}>
-          <DisplayHeading ground="dark" business={titleGradient}>
+          <DisplayHeading ground={ground} business={titleGradient}>
             {title}
           </DisplayHeading>
         </Reveal>
@@ -120,7 +127,7 @@ export function ProductDownloadsLayout({
           {items.map((item) => (
             <li key={item.href}>
               <DocumentLink
-                ground="dark"
+                ground={ground}
                 href={item.href}
                 title={item.title}
                 fileSize={item.fileSize}

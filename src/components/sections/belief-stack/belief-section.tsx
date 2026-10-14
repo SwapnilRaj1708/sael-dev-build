@@ -70,6 +70,16 @@ export interface Belief {
   accent: BeliefAccent;
   /** Which half of the card the cut-out takes from `lg`. Beliefs alternate. */
   side: 'start' | 'end';
+  /**
+   * The ground the belief is drawn on. `dark` unless given. `paper` sets the
+   * section, the card's outline, the heading, copy and checklist in their
+   * paper ramps and inks — Environmental Stewardship and Our Biodiversity
+   * Commitment, at the client's request of 2026-10-14. The accent is the
+   * belief's own on either ground: violet and indigo, the two on paper, are
+   * 3.1 and 4.0 against it, over the 3.0 a check mark needs; coral would
+   * not be. The icon is the caller's: pass the set's coloured variant.
+   */
+  ground?: 'dark' | 'paper';
 }
 
 export interface BeliefSectionProps extends Belief {
@@ -120,16 +130,18 @@ export function BeliefSection({
   cutout,
   accent,
   side,
+  ground = 'dark',
   action,
   snap = false,
 }: BeliefSectionProps) {
   const titleId = `${id}-title`;
+  const paper = ground === 'paper';
 
   return (
     <Section
       id={id}
       aria-labelledby={titleId}
-      background="black-dots"
+      background={paper ? 'paper-dots' : 'black-dots'}
       // Tight, so a belief fits one screen at the sizes the site is
       // reviewed at: the card is the screen's content, not a band in it.
       spacing="tight"
@@ -138,7 +150,7 @@ export function BeliefSection({
     >
       <Card
         shape="outlined"
-        ground="dark"
+        ground={ground}
         inset="none"
         hoverEffect={false}
         className={cn(
@@ -178,20 +190,33 @@ export function BeliefSection({
             {/* The badge. The square is the frame and the icon stands upright
                 in it; both are decoration, the heading names the belief. */}
             <span aria-hidden="true" className="relative block size-14 shrink-0 lg:size-16">
-              <span className="absolute inset-0 flex items-center justify-center text-white [&_svg]:size-6 lg:[&_svg]:size-7">
+              <span
+                className={cn(
+                  'absolute inset-0 flex items-center justify-center',
+                  '[&_svg]:size-6 lg:[&_svg]:size-7',
+                  paper ? 'text-ink' : 'text-white',
+                )}
+              >
                 {icon}
               </span>
             </span>
           </Reveal>
 
           <Reveal order={1} className="mt-inset">
-            <DisplayHeading id={titleId} ground="dark" className="w-fit text-balance">
+            <DisplayHeading id={titleId} ground={ground} className="w-fit text-balance">
               {title}
             </DisplayHeading>
           </Reveal>
 
           <Reveal order={2} className="mt-inset">
-            <p className="max-w-(--measure) text-body text-pretty text-body-on-dark">{body}</p>
+            <p
+              className={cn(
+                'max-w-(--measure) text-body text-pretty',
+                paper ? 'text-body-base' : 'text-body-on-dark',
+              )}
+            >
+              {body}
+            </p>
           </Reveal>
 
           <Reveal order={3} className="mt-inset">
@@ -199,14 +224,19 @@ export function BeliefSection({
               {points.map((point) => (
                 <li
                   key={point}
-                  className="flex items-center gap-inset border-t border-hairline-dark py-3 last:border-b lg:py-2.5"
+                  className={cn(
+                    'flex items-center gap-inset border-t py-3 last:border-b lg:py-2.5',
+                    paper ? 'border-hairline-paper' : 'border-hairline-dark',
+                  )}
                 >
                   <Check
                     aria-hidden="true"
                     focusable="false"
                     className={cn('size-5 shrink-0', ACCENT_CLASS[accent])}
                   />
-                  <span className="text-body text-white">{point}</span>
+                  <span className={cn('text-body', paper ? 'text-ink' : 'text-white')}>
+                    {point}
+                  </span>
                 </li>
               ))}
             </ul>

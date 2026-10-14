@@ -181,6 +181,29 @@ light, and each of the light ones was a specific instruction:
 | In the News | `paper-dots` |
 | Pixel strip | `ground-dots-paper` — not a `<Section>` |
 
+**The inner pages' light sections**, all from the client's instruction of 2026-10-14,
+which asked for the homepage's alternation on nine more pages. Every other section on
+these pages stays dark.
+
+| Page | On `paper-dots` |
+|---|---|
+| Solar Energy | Overview; "How We Reduce Cost?" |
+| Module Manufacturing | Overview; Product Downloads + Manufacturing Prowess |
+| Solar Cell Manufacturing | Overview; Highlights |
+| Agri Waste-to-Energy | Overview; "Why Waste-to-Energy?" |
+| Story of Our Influence | Public Health |
+| Our Key ESG Metrics | Sustainable Development Goals |
+| Our Core Beliefs | Environmental Stewardship; Our Biodiversity Commitment (and the ESG Report pill under it) |
+| Career | Life at SAEL |
+| About Us | Our Guiding Principles |
+
+Each is a `ground="paper"` prop on its section. A section's marks take `ground="paper"`
+too and draw the icon set's coloured no-tile variant in place of the white one. On a
+business page the paper sections' eyebrows and headings are in the business's own ledger
+ramp, the one its dark sections use: a trial, to judge it on paper first. A darkened
+ramp, `--gradient-ledger-*-deep`, is defined and not in use; see `business-ramp-*` in
+globals.css.
+
 Record the instruction beside any new light section, the way `frontend-progress.md`
 records the ones above. A ground with no recorded reason is the one a later session will
 "correct".

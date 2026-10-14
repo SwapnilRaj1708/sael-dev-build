@@ -48,10 +48,10 @@ const CAPABILITY_MARKS = [
 ];
 
 const PRACTICE_MARKS = [
-  <TeamMark key="team" />,
-  <PlanMark key="plan" />,
-  <EvacuationMark key="evacuation" />,
-  <ScadaMark key="scada" />,
+  <TeamMark key="team" ground="paper" />,
+  <PlanMark key="plan" ground="paper" />,
+  <EvacuationMark key="evacuation" ground="paper" />,
+  <ScadaMark key="scada" ground="paper" />,
 ];
 
 const capabilityItems: CapabilityItem[] = solarCapabilities.items.map((item, index) => ({
@@ -92,7 +92,9 @@ export default function SolarEnergyPage() {
   return (
     <div data-snap-sections className="-mt-header business-ramp-solar lg:mt-0">
       <PageHero titleGradient="solar" {...solarEnergyHero} snap />
-      <ProseSplit titleGradient="solar" {...solarOverview} snap />
+      {/* Overview and "How We Reduce Cost?" on paper, the rest on the black ground — the
+          client's alternation of 2026-10-14, as the homepage alternates. */}
+      <ProseSplit titleGradient="solar" {...solarOverview} ground="paper" snap />
       <ProjectsMap titleGradient="solar" {...solarProjects} sites={solarSites} snap />
       <CapabilitySplit
         titleGradient="solar"
@@ -110,6 +112,7 @@ export default function SolarEnergyPage() {
         title={solarPractices.title}
         items={practiceItems}
         variant="outlined"
+        ground="paper"
         snap
       />
     </div>

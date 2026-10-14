@@ -99,6 +99,8 @@ export const beliefs: readonly BeliefCopy[] = [
     },
     accent: 'violet',
     side: 'end',
+    // The first and last beliefs on paper, the client's ask of 2026-10-14.
+    ground: 'paper',
   },
   {
     id: 'our-social-impact',
@@ -156,6 +158,7 @@ export const beliefs: readonly BeliefCopy[] = [
     },
     accent: 'indigo',
     side: 'start',
+    ground: 'paper',
   },
 ];
 

@@ -164,8 +164,11 @@ export default function CareerPage() {
       />
 
       {/* The last section on the page: extra room beneath the photographs
-          before the footer's pixel strip, the client's ask of 2026-09-22. */}
-      <GalleryGrid {...lifeAtSael} spacing="closing" snap />
+          before the footer's pixel strip, the client's ask of 2026-09-22.
+          On paper, the client's alternation of 2026-10-14; it is the page's
+          one light section ("Career at SAEL" was asked for too, then kept
+          dark). */}
+      <GalleryGrid {...lifeAtSael} ground="paper" spacing="closing" snap />
     </div>
   );
 }

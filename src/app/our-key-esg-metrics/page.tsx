@@ -60,7 +60,8 @@ export default function OurKeyEsgMetricsPage() {
   return (
     <div data-snap-sections className="-mt-header lg:mt-0">
       <EsgHero {...esgMetricsHero} snap />
-      <SdgGrid {...sdgCommitments} snap />
+      {/* On paper, the client's ask of 2026-10-14; hero and reporting stay dark. */}
+      <SdgGrid {...sdgCommitments} ground="paper" snap />
       <ReportingStakeholders
         reporting={{ ...reportingFramework, action: <EsgReportLink /> }}
         stakeholders={stakeholders}
