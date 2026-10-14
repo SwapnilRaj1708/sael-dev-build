@@ -1,12 +1,21 @@
 import type { SocialPlatform } from '@/lib/content/static/footer';
 import { cn } from '@/lib/utils/cn';
 
-/** Each platform's own colour. See --color-brand-* and --gradient-brand-instagram. */
-const BRAND_FILL: Record<SocialPlatform, string> = {
+/** Each platform's own colour, as a background. See --color-brand-* and --gradient-brand-instagram. */
+export const BRAND_FILL: Record<SocialPlatform, string> = {
   facebook: 'bg-brand-facebook',
   instagram: 'bg-(image:--gradient-brand-instagram)',
   linkedin: 'bg-brand-linkedin',
   x: 'bg-brand-x',
+};
+
+/**
+ * The same colours for a pill carrying text. Only Instagram differs: its
+ * brand gradient is too light for white text where it turns yellow.
+ */
+export const BRAND_PILL: Record<SocialPlatform, string> = {
+  ...BRAND_FILL,
+  instagram: 'bg-(image:--gradient-brand-instagram-pill)',
 };
 
 /**

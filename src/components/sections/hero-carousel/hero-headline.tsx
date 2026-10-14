@@ -109,8 +109,14 @@ export function HeroHeadline({ slide, isActive }: HeroHeadlineProps) {
                     // `box-decoration-break: clone` so a run that does break is
                     // painted with the full ramp on each line rather than one
                     // gradient stretched across both.
+                    //
+                    // `whitespace-pre-line` so a `\n` written into the run is
+                    // a line break, as the headline's author set it, rather
+                    // than collapsing into a space and leaving the wrap to
+                    // the measure.
                     'gradient-text',
                     '[box-decoration-break:clone] [-webkit-box-decoration-break:clone]',
+                    'whitespace-pre-line',
                     highlightClassName,
                   ]
                 : [

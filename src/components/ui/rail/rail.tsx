@@ -218,11 +218,21 @@ function useAutoAdvance(
       observer.observe(element);
     }
 
+    // A step finds nothing to scroll while every card fits, and nothing then
+    // re-arms the timer: a rail of two that starts out fitting would stay still
+    // after a rotation or a narrower window made it scroll. A resize re-arms it.
+    let resizes: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizes = new ResizeObserver(arm);
+      resizes.observe(element);
+    }
+
     arm();
 
     return () => {
       window.clearTimeout(timer);
       observer?.disconnect();
+      resizes?.disconnect();
       element.removeEventListener('pointerenter', onPointerEnter);
       element.removeEventListener('pointerleave', onPointerLeave);
       element.removeEventListener('focusin', onFocusIn);

@@ -1,12 +1,6 @@
 import { env } from '@/lib/config/env';
 import { legacyOrBlobUrl } from '@/lib/utils/blob-url';
-import {
-  newsArticlePath,
-  newsItemHref,
-  newsListingPath,
-  newsPreviewItemHref,
-  newsVideoThumbnail,
-} from '../news-links';
+import { newsItemHref, newsPreviewItemHref, newsVideoThumbnail } from '../news-links';
 import type { ContentRepository, NewsItemsQuery } from '../repository';
 import type {
   BlobFile,
@@ -32,7 +26,6 @@ import type {
 } from '../types';
 import investorDocuments from './data/investor-documents.json';
 import investorTiles from './data/investor-tiles.json';
-import newsItems from './data/news-items.json';
 import newsroomItems from './data/newsroom-items.json';
 
 /**
@@ -198,20 +191,6 @@ function toGroups(row: TileFixture): InvestorDocumentGroup[] {
 }
 
 /**
- * A homepage carousel row, as `news-items.json` has stored it since FE-04 —
- * the card fields, and the slug of the press release it is, in
- * `newsroom-items.json`. The fields it does not carry are the same in all six
- * rows and are filled in on read.
- */
-interface HomepageNewsFixture {
-  id: string;
-  title: string;
-  publishedAt: string;
-  slug: string;
-  imageUrl: string | null;
-}
-
-/**
  * A Newsroom row: the domain fields, with the image as a path pair rather
  * than a URL, and the body for an article. Generated from the legacy pages'
  * HTML — see `getNewsItems()`. Every legacy video is on YouTube, so a row
@@ -283,6 +262,13 @@ function toNewsItem(row: NewsroomFixture): NewsItem | null {
  * that screen, and anything else is refused. Not a secret and not a stand-in
  * for one — the mock serves the same fixtures it serves live.
  */
+/**
+ * The backend's default for `content.home.in-the-news.limit`: how many of the
+ * latest In The News items the homepage rail shows while SAEL has marked none
+ * for it.
+ */
+const HOME_RAIL_LATEST = 9;
+
 const MOCK_LINK_PREFIX = 'mock:';
 const MOCK_SESSION_PREFIX = 'mock-session:';
 
@@ -346,8 +332,8 @@ export class MockContentRepository implements ContentRepository {
    * **In the file's line order, which is each legacy listing's order** —
    * newest first for the dated sections, the company's own for Our Views and
    * Multimedia. Not sorted here: the repository returns the source's order,
-   * and the backend's is editorial (featured first), which no sort on these
-   * fields reproduces. A mock that sorted would hide a page that did.
+   * and the backend's is editorial (set on the panel's Reorder screen), which
+   * no sort on these fields reproduces. A mock that sorted would hide a page that did.
    *
    * Images resolve like the investor files do: the legacy copy while
    * `LEGACY_ASSET_BASE_URL` is set, the blob path (`web-assets` + legacy
@@ -362,39 +348,18 @@ export class MockContentRepository implements ContentRepository {
   }
 
   /**
-   * The homepage rail, from its own fixture, `news-items.json`, exactly as
-   * it has been read since FE-04: six press releases, newest first, with the
-   * client's own stills from `public/news/`. A snapshot from before the
-   * Newsroom existed, kept so the homepage does not change under the API work.
-   *
-   * Each card links to its own press release's page (2026-10-13; until then
-   * every one linked to `/newsroom/`). The slug is checked against the
-   * Newsroom's fixture, so a card never links to an article the mock cannot
-   * serve: one that does not match goes to the Press Release listing.
-   *
-   * **It is not In The News**, which the API rail is. Switching this to the
-   * `in-the-news` rows of `newsroom-items.json` would make the mock match,
-   * at the price of the homepage's current look under the mock; that is a
-   * decision for the homepage's owner, not a side effect of the cutover.
+   * The homepage rail: the first In The News items of `newsroom-items.json`,
+   * in its order, as the API's rail is the first of its listing. The backend
+   * sends the items SAEL marked for the homepage when any are marked; the
+   * mock has no such marks, so it always answers as the backend does without
+   * them — the latest {@link HOME_RAIL_LATEST}, however many more `limit`
+   * allows. docs/api-contracts.md §3.3.
    */
   getInTheNewsRail(limit: number): Promise<NewsItem[]> {
-    const articles = new Set(
-      (newsroomItems as NewsroomFixture[])
-        .filter((row) => row.category === 'press-release' && row.body !== null)
-        .map((row) => row.slug),
-    );
-    const items = (newsItems as HomepageNewsFixture[]).map((row): NewsItem => ({
-      ...row,
-      category: 'press-release',
-      href: articles.has(row.slug)
-        ? newsArticlePath('press-release', row.slug)
-        : newsListingPath('press-release'),
-      imageAlt: null,
-      externalUrl: null,
-      video: null,
-      publication: null,
-    }));
-    return this.settle(items.slice(0, limit));
+    return this.getNewsItems({
+      category: 'in-the-news',
+      limit: Math.min(limit, HOME_RAIL_LATEST),
+    });
   }
 
   async hasNewsArticle(category: NewsArticleCategory, slug: string): Promise<boolean> {

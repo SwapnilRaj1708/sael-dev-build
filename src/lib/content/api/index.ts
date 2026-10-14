@@ -192,9 +192,11 @@ export class ApiContentRepository implements ContentRepository {
   }
 
   /**
-   * `GET /app/v1/news-live?type=IN_THE_NEWS&limit=…`. docs/api-contracts.md
-   * §3.3. `limit` rather than `size`, so the backend's business cap applies;
-   * one request, never the paging loop.
+   * `GET /app/v1/news-live?type=IN_THE_NEWS&limit=…&size=…`.
+   * docs/api-contracts.md §3.3. `limit` is what the backend reads to choose
+   * the rail — the highlighted items, or the latest K — and `size` is the
+   * same number so that one page holds the whole answer; one request, never
+   * the paging loop.
    */
   async getInTheNewsRail(limit: number): Promise<NewsItem[]> {
     const params = { type: newsTypeOf('in-the-news'), limit: String(limit), size: String(limit) };

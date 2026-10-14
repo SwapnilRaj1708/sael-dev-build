@@ -58,9 +58,10 @@ export interface NewsItemsQuery {
  */
 export interface ContentRepository {
   /**
-   * One Newsroom section's items, **in the source's order** — featured
-   * first, then the panel's manual position, then newest first. That order
-   * is editorial; neither the adapter nor a page re-sorts it.
+   * One Newsroom section's items, **in the source's order** — the panel's
+   * Reorder screen sets it: items nobody has placed yet first, newest first,
+   * then the placed ones in the editor's order. That order is editorial;
+   * neither the adapter nor a page re-sorts it.
    *
    * Without `limit` this is **every** item in the section, however many
    * pages the backend serves them in. With it, the first `limit`.
@@ -71,11 +72,13 @@ export interface ContentRepository {
    * in the source's order.
    *
    * A method of its own rather than `getNewsItems({ category, limit })`
-   * because the backend caps this one call again with a business setting,
-   * `content.home.in-the-news.limit` — so the rail may return fewer than
-   * `limit`, by the business's choice, and must render what it gets. That
-   * cap belongs to the rail alone; the Newsroom's own rows must not be cut
-   * by it. docs/api-contracts.md §3.3.
+   * because the backend chooses this list itself: the items SAEL marked for
+   * the homepage, in their chosen order, when any are marked, and otherwise
+   * the first K of the listing (`content.home.in-the-news.limit`). So the
+   * rail may return fewer than `limit`, by the business's choice, and must
+   * render exactly what it gets — no re-sort, no padding. That choice belongs
+   * to the rail alone; the Newsroom's own rows must not be cut by it.
+   * docs/api-contracts.md §3.3.
    */
   getInTheNewsRail(limit: number): Promise<NewsItem[]>;
   /**

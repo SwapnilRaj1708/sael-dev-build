@@ -61,11 +61,9 @@ export type NewsArticleCategory = Extract<NewsCategory, 'press-release' | 'our-v
  * card needs, and no article body. docs/content-model.md §2.
  *
  * `imageUrl` is a URL and not a bundled import on purpose: these images come
- * from the CMS, so the frontend cannot know them at build time. The homepage
- * fixture serves the client's supplied stills from `public/news/` —
- * root-relative paths that `next/image` optimises exactly as it optimises the
- * absolute URLs the API returns. A Multimedia item's image is its own artwork
- * where it has one, and a YouTube video's thumbnail where it does not.
+ * from the CMS, so the frontend cannot know them at build time. A Multimedia
+ * item's image is its own artwork where it has one, and a YouTube video's
+ * thumbnail where it does not.
  *
  * `href` is where the card goes, resolved by the repository from the fields
  * below it: the article page, the publication, or the video itself.
@@ -83,9 +81,10 @@ export type NewsArticleCategory = Extract<NewsCategory, 'press-release' | 'our-v
  * | `our-views`     | either      | set  | `null`      | `null` |
  * | `multimedia`    | either      | `null` | `null`    | set    |
  *
- * **The order of a list of these is the source's, not a sort.** The backend
- * puts featured items first, then any position set in the panel, then newest
- * first — editorial intent that no comparison on these fields can reproduce.
+ * **The order of a list of these is the source's, not a sort.** The panel's
+ * Reorder screen sets it — items nobody has placed yet first, newest first,
+ * then the placed ones in the editor's order — which is editorial intent that
+ * no comparison on these fields can reproduce.
  */
 export interface NewsItem {
   id: string;

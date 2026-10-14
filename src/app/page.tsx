@@ -34,11 +34,13 @@ export const metadata: Metadata = buildMetadata({
 });
 
 /**
- * How many In The News items the rail asks for. The backend may return fewer:
- * it caps this call with its own setting, `content.home.in-the-news.limit`,
- * per environment. docs/api-contracts.md §3.3.
+ * The most the backend will ever return; the backend decides between
+ * highlights and the latest K. SAEL may mark up to twelve items for the
+ * homepage, and when none are marked the backend sends the latest K
+ * (`content.home.in-the-news.limit`, nine by default). Either way the rail
+ * renders what comes back, in that order. docs/api-contracts.md §3.3.
  */
-const NEWS_LIMIT = 9;
+const HOME_RAIL_CEILING = 12;
 
 /**
  * The "In the News" rail's items. **A failure throws, in every environment.**
@@ -53,7 +55,7 @@ const NEWS_LIMIT = 9;
  * docs/content-model.md §3 rule 2 for live, ISR-cached content only.
  */
 function resolveNewsItems(): Promise<NewsItem[]> {
-  return getContentRepository().getInTheNewsRail(NEWS_LIMIT);
+  return getContentRepository().getInTheNewsRail(HOME_RAIL_CEILING);
 }
 
 /**

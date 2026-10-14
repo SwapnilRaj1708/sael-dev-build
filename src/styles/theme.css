@@ -628,6 +628,10 @@
    * Neither name collides with Tailwind's `inline-*` display utilities — see
    * the note on --spacing-flow for why that check is not optional. */
   --spacing-inset: clamp(1rem, 0.8846rem + 0.5128vw, 1.5rem); /* 16 → 24 */
+  /* A business row's right padding from `lg` (client, 2026-10-14): 70% of
+   * --spacing-flow, so the mark stands further off the edge as the screen
+   * grows — about 25px at `lg`, 35px at 1920. */
+  --spacing-ledger-pad-r: calc(var(--spacing-flow) * 0.7);
   --spacing-tight: clamp(0.5rem, 0.4423rem + 0.2564vw, 0.75rem); /* 8 → 12 */
 
   /* The gap between a card's body and its footer — the rule above a "Know More",
@@ -640,11 +644,12 @@
   /* The WCAG floor for a touch target. docs/responsive-strategy.md §5. */
   --spacing-touch: 2.75rem; /* 44 */
 
-  /* The social FAB (components/layout/social-fab): the button, each social
-   * disc it opens, and how far the pair stands off the viewport's corner. */
-  --spacing-fab: 3.5rem; /* 56 */
-  --spacing-fab-item: 3rem; /* 48 */
-  --spacing-fab-offset: clamp(1rem, 0.6rem + 1.6vw, 2rem); /* 16 → 32 */
+  /* The social FAB (components/layout/social-fab): each disc as drawn, and
+   * how far the column stands off the viewport's corner. Both close in on a
+   * phone, where the column is always on screen (client, 2026-10-14). The
+   * link around a disc stays --spacing-touch whatever the disc's size. */
+  --spacing-fab-item: clamp(2.25rem, 1.95rem + 0.8vw, 2.75rem); /* 36 → 44 */
+  --spacing-fab-offset: clamp(0.75rem, 0.45rem + 1.25vw, 2rem); /* 12 → 32 */
 
   /* A stacked link's row height where the pointer is fine — the footer's link
    * columns and nothing else so far. **Not a relaxation of --spacing-touch.**
@@ -1044,11 +1049,15 @@
   --shadow-card-hover: 0 22px 44px rgb(20 24 32 / 0.14);
   /* A map tooltip, which floats over a dark section and needs to lift off it. */
   --shadow-tooltip: 0 8px 24px rgb(0 0 0 / 0.35);
-  /* The social FAB, in the CTA gradient's purple end so it reads as lit by
-   * its own colour; and the white discs it opens, which have to lift off any
-   * ground, light or dark. */
-  --shadow-fab: 0 14px 30px -10px rgb(69 37 141 / 0.6);
-  --shadow-fab-item: 0 8px 20px -8px rgb(0 0 0 / 0.45);
+  /* The social FAB's white discs and their names, in the brand's colours
+   * (client, 2026-10-14): a box-shadow cannot be a gradient, so it is two —
+   * --color-brand-purple falling to the lower left, --color-brand-red to the
+   * lower right — which meet under the disc as the CTA gradient does. A
+   * tight dark core under both keeps the lift on a light ground, where the
+   * colour alone would read as a glow rather than a shadow. */
+  --shadow-fab-item:
+    -5px 9px 22px -5px rgb(69 37 141 / 0.8), 5px 9px 22px -5px rgb(228 15 20 / 0.7),
+    0 4px 8px -4px rgb(0 0 0 / 0.3);
   --shadow-nav-cta: 0 10px 24px -8px rgb(216 31 53 / 0.5);
   --shadow-nav-cta-hover: 0 16px 30px -8px rgb(216 31 53 / 0.6);
   --shadow-quote: 0 16px 34px -18px rgb(6 40 30 / 0.45);
@@ -1104,6 +1113,19 @@
   /* Gradients — docs/design-guidelines.md §1 */
   --gradient-eyebrow: linear-gradient(90deg, #aa0505 0%, #0d2fa2 100%);
   --gradient-cta: linear-gradient(105deg, #f9e800 -24%, #e40f14 6%, #45258d 95%);
+  /* Instagram's gradient for a wide, text-bearing shape — the social FAB's
+   * name pill (2026-10-14). The brand gradient's yellow and orange stops
+   * leave white text under 3:1; this one runs the same hues from blue
+   * through purple to pink and stops before them, so white clears 4.5:1
+   * across it except at the pink end, which is 4.2:1 and carries no text. */
+  --gradient-brand-instagram-pill: linear-gradient(
+    90deg,
+    #405de6 0%,
+    #833ab4 38%,
+    #c13584 72%,
+    #dd2a6a 100%
+  );
+
   /* Instagram's brand gradient, for the social FAB's hover. See
    * --color-brand-*. */
   --gradient-brand-instagram: radial-gradient(
@@ -1569,13 +1591,14 @@
     rgb(232 236 240 / 0.92)
   );
 
-  /* The wash on the column under the pointer. Fades out well before the
-   * column's right edge so it reads as a highlight rather than a block. */
+  /* The wash on the column under the pointer. Strong enough that the
+   * selected column stands out, and carried almost to the column's right
+   * edge; the lit rows' ink text stays above 9:1 on its darkest point. */
   --gradient-mega-hot: linear-gradient(
     90deg,
-    rgb(122 31 87 / 0.12),
-    rgb(216 31 53 / 0.05),
-    transparent 74%
+    rgb(122 31 87 / 0.28),
+    rgb(216 31 53 / 0.15),
+    rgb(216 31 53 / 0.03) 92%
   );
 
   --color-mega-rule: rgb(20 40 32 / 0.12);
@@ -2241,8 +2264,8 @@
    * column arriving and the next. */
   --duration-mega: 450ms;
   --duration-mega-step: 60ms;
-  /* The social FAB opening: each disc's travel, and the gap between one disc
-   * and the next, nearest the button first (and last on the way back). */
+  /* The social FAB: each disc's entrance and its name's slide, and the gap
+   * between one disc rising in and the next. */
   --duration-fab: 320ms;
   --duration-fab-step: 50ms;
   /* A social disc filling with its platform's colour on hover, from the
@@ -2307,10 +2330,6 @@
    * that the pulse was hard to see. **This is the number to tune** — change
    * it here, nowhere else, and every map on the site follows. */
   --map-ping-scale: 4.2;
-
-  /* How far the social FAB's halo grows before it fades, as a multiple of the
-   * button. Read by `fabHalo` in animations.css. */
-  --fab-halo-scale: 1.8;
 
   /* The primary CTA's hover. A filter rather than a second gradient, so the
    * button lifts without the stops having to be restated. */

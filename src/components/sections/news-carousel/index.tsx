@@ -10,6 +10,16 @@ import { Section } from '@/components/ui/section';
 import { cn } from '@/lib/utils/cn';
 import { SIZES_NEWS_CARD } from '@/lib/utils/image-sizes';
 
+/**
+ * How many cards cascade in one after another; the rest share the last one's
+ * delay. Six covers every card on screen at first sight up to the 1920px the
+ * design is reviewed at, where five show, the last cut off. A card further
+ * along only enters when the rail scrolls
+ * it into view, and an uncapped stagger kept the twelfth one blank for most
+ * of a second after it arrived, nearly half of each auto-advance step.
+ */
+const STAGGERED_CARDS = 6;
+
 export interface NewsCarouselProps {
   title: string;
   items: NewsItem[];
@@ -95,7 +105,7 @@ export function NewsCarousel({
               <li key={item.id} className="flex w-news-card shrink-0 snap-start">
                 {/* 2, 3, 4 … — the label is 0 and 1 is skipped, so the cards
                     cascade in after it rather than alongside it. */}
-                <Reveal order={index + 2} className="flex w-full">
+                <Reveal order={Math.min(index, STAGGERED_CARDS - 1) + 2} className="flex w-full">
                   <NewsCard
                     title={item.title}
                     publishedAt={item.publishedAt}

@@ -232,8 +232,11 @@ superset of the list above.
 | `type` | **yes** | `PRESS_RELEASE`, `IN_THE_NEWS`, `OUR_VIEWS`, `MULTIMEDIA`. `filter` and `section` are accepted as aliases |
 | `page`, `size`, `limit`, `sort` | no | §2.2 |
 
-**Order:** featured items first, then any manual position set in the panel, then
-`publishDate` newest first, then a stable tie-break. Render in the order given.
+**Order:** set **only** by the admin panel's Reorder screen (backend 1.14, rows 3.59–3.61). Items
+nobody has placed yet — newly published ones — come first, newest first, then the placed items in
+the editor's order. Render in the order given. **Nothing on the site re-sorts a news list**, by
+date or by any flag: the listings, the Newsroom index and the homepage rail all show the API's
+order.
 
 **Response:** the envelope (§2.2) with `items` of `NewsBody`:
 
@@ -252,7 +255,7 @@ superset of the list above.
 | `mediaUrl` | string | yes | The YouTube/Vimeo URL |
 | `mediaVideoId` | string | yes | The id extracted from `mediaUrl`, for thumbnails and embeds |
 | `mediaFileUrl` | string | yes | `HOSTED` video: the file's public URL |
-| `featured` | boolean | never | |
+| `featured` | boolean | never | **Always `false` since backend 1.14.** Means nothing; the site does not read it |
 
 Listing items **omit** the detail-only fields below. The keys are absent, not null.
 
@@ -287,13 +290,27 @@ served as it would be without it.
 
 ### 3.3 The homepage "In The News" rail
 
-`GET /app/v1/news-live?type=IN_THE_NEWS&limit=9`
+`GET /app/v1/news-live?type=IN_THE_NEWS&limit=12&size=12`
 
 - `type=IN_THE_NEWS` is **mandatory**. Without it the call is a `400`, and the rail disappears.
-- `limit` is capped by the backend setting `content.home.in-the-news.limit`. The rail is
-  designed for nine. The setting is being raised from 3 to 9. Until it is raised in an
-  environment, that environment returns three. Render whatever comes back.
-- Publishing an `IN_THE_NEWS` item revalidates `/` (§7).
+- **The backend decides what the rail shows**, and returns one of two lists:
+  - **Highlights** — the items SAEL marked for the homepage in the panel, in their chosen order,
+    up to 12. When any are marked, these are the whole answer and the setting below does not
+    apply.
+  - **The latest K** — when none are marked, the first `min(limit, K)` items of the listing, in
+    listing order (§3.1). K is the backend setting `content.home.in-the-news.limit`, `9` by
+    default.
+- **`12` is a ceiling, not a target.** It is the most the backend will ever return
+  (`HOME_RAIL_CEILING` in `src/app/page.tsx`); the site asks for it so that a full set of
+  highlights always fits, and `size` matches so one page holds the whole answer. Expect anything
+  from 1 to 12.
+- **Show exactly what arrives, in that order.** No re-sort, no padding, no trimming. The carousel
+  is built for any count from 1 to 12: when every card fits, its arrows stay disabled and it does
+  not advance.
+- The mock repository answers as the backend does with nothing highlighted: the first nine
+  In The News items of its Newsroom fixture.
+- Publishing, unpublishing or reordering an `IN_THE_NEWS` item, and changing the highlights, each
+  revalidate `/` (§7).
 
 ---
 
@@ -681,7 +698,8 @@ pages of §6.1 exist.
 
 ### 7.1 What arrives
 
-After every publish, unpublish and delete-of-published, the backend POSTs to the URL in its
+After every publish, unpublish and delete-of-published, every newsroom reorder and every change to
+the homepage highlights, the backend POSTs to the URL in its
 setting `publish.revalidation.url`, for example `https://www.sael.co/api/revalidate/`:
 
 ```http
@@ -695,9 +713,9 @@ X-SAEL-Signature: sha256=3f1c…e9
 
 | Field | Meaning |
 |---|---|
-| `event` | `CONTENT_PUBLISHED`, `CONTENT_UNPUBLISHED` or `CONTENT_DELETED`. Same body for all three. Nothing needs to branch on it |
+| `event` | `CONTENT_PUBLISHED`, `CONTENT_UNPUBLISHED`, `CONTENT_DELETED`, `CONTENT_REORDERED` or `HOME_HIGHLIGHTS_CHANGED` (the last two since backend 1.14). Same body for all five. Nothing needs to branch on it; it is read for the log line |
 | `screenCode` | The screen the record belongs to (§6.1 table) |
-| `itemPublicId` | The record's `publicId` |
+| `itemPublicId` | The record's `publicId`. **`null`** for `CONTENT_REORDERED` and `HOME_HIGHLIGHTS_CHANGED`, which are about a list rather than one record. The site accepts `null` or absence for every field but `paths` |
 | `paths` | **Revalidate every one.** Each ends in `/` |
 | `occurredAt` | When the publish happened. **Not** when this attempt was made |
 
@@ -706,6 +724,8 @@ Paths sent today:
 | Record | `paths` |
 |---|---|
 | News of any type | the type's listing (`/newsroom/press-release/`, …), **`/newsroom/`**, plus the article (`/newsroom/press-release/{slug}/`) for `PRESS_RELEASE`/`OUR_VIEWS`, plus **`/`** for `IN_THE_NEWS` |
+| A reorder (`CONTENT_REORDERED`) | the type's listing, **`/newsroom/`**, plus **`/`** for `IN_THE_NEWS` |
+| A highlights change (`HOME_HIGHLIGHTS_CHANGED`) | **`/`** only |
 | Investor tile or document | the section's `basePath`, plus the tile's page `basePath + slug + "/"` |
 
 The tile pages are a dynamic `[slug]` route on the site. `revalidatePath` with a literal path such

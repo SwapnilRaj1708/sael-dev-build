@@ -175,7 +175,7 @@ import { HeroCarousel } from '@/components/sections/hero-carousel';
 import { NewsGrid } from '@/components/sections/news-grid';
 
 export default async function HomePage() {
-  const news = await getContentRepository().getInTheNewsRail(9);
+  const news = await getContentRepository().getInTheNewsRail(12);
 
   return (
     <main>

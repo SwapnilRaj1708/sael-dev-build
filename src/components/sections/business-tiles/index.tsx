@@ -182,11 +182,16 @@ export function BusinessTiles({ eyebrow, tiles, snap = false }: BusinessTilesPro
                     // trimmed mark. In flow it is laid out like anything else
                     // and there is nothing left to get wrong.
                     'gap-x-flow',
+                    // Every row's mark stands off the row's right edge by the
+                    // same margin, the padding the upcoming row's panel brought
+                    // with it — the client's call of 2026-10-14. `inset` up to
+                    // `lg`, then a larger step that grows with the screen.
+                    'pr-inset lg:pr-ledger-pad-r',
                     // The one row that is not yet operational carries its own
-                    // ground. Inline padding comes with it: without it the
-                    // copy would start hard against the panel's edge, where
-                    // every other row starts against nothing.
-                    tile.upcoming === true && 'bg-tile-upcoming px-inset',
+                    // ground. Left padding comes with it: without it the copy
+                    // would start hard against the panel's edge, where every
+                    // other row starts against nothing.
+                    tile.upcoming === true && 'bg-tile-upcoming pl-inset',
                   )}
                 >
                   {/* `min-w-0` so a long capacity figure shrinks the column

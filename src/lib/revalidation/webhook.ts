@@ -81,14 +81,16 @@ const sitePath = z
 /**
  * The body. Only `paths` is acted on, so only `paths` is required: a field the
  * backend renames or adds must not stop a page being refreshed. The rest is
- * read for the log line.
+ * read for the log line, and each may be `null` as well as absent —
+ * `CONTENT_REORDERED` and `HOME_HIGHLIGHTS_CHANGED` are about a list rather
+ * than one record, and send `"itemPublicId": null`.
  */
 export const webhookPayloadSchema = z.object({
-  event: z.string().optional(),
-  screenCode: z.string().optional(),
-  itemPublicId: z.string().optional(),
+  event: z.string().nullish(),
+  screenCode: z.string().nullish(),
+  itemPublicId: z.string().nullish(),
   paths: z.array(sitePath).min(1).max(100),
-  occurredAt: z.string().optional(),
+  occurredAt: z.string().nullish(),
 });
 
 export type WebhookPayload = z.infer<typeof webhookPayloadSchema>;

@@ -86,8 +86,8 @@ export type NewsVideo =
   | { provider: 'vimeo'; id: string; pageUrl: string }   // pageUrl: the URL the maker entered
   | { provider: 'hosted'; fileUrl: string };             // mediaFileUrl
 
-/* Lists of these are in the source's order — featured first, then the panel's
-   position, then newest first. Never re-sorted. */
+/* Lists of these are in the source's order, set on the panel's Reorder screen —
+   unplaced items first, newest first, then the editor's order. Never re-sorted. */
 export interface NewsItem {
   id: string;                 // publicId
   category: NewsCategory;     // type, PRESS_RELEASE ↔ press-release
@@ -257,7 +257,8 @@ export interface ContentRepository {
   // The adapter reads every backend page instead. `category` is required: the
   // backend refuses a news call without a type.
   getNewsItems(options: { category: NewsCategory; limit?: number }): Promise<NewsItem[]>;
-  // The homepage's In the News rail. The backend may return fewer than `limit`.
+  // The homepage's In the News rail: highlights or the latest K, as the backend
+  // chooses (api-contracts.md §3.3). Expect 1 to `limit`, rendered as received.
   getInTheNewsRail(limit: number): Promise<NewsItem[]>;
   getNewsArticle(category: NewsArticleCategory, slug: string): Promise<NewsArticle | null>;
 
