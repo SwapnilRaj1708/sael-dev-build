@@ -77,6 +77,8 @@ export default function ModuleManufacturingPage() {
           title: moduleProwess.title,
           items: prowessItems,
           variant: 'outlined',
+          // The prowess cards only: the downloads above them are not cards.
+          frosted: true,
         }}
         ground="paper"
         snap

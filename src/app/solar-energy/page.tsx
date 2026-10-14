@@ -113,6 +113,7 @@ export default function SolarEnergyPage() {
         items={practiceItems}
         variant="outlined"
         ground="paper"
+        frosted
         snap
       />
     </div>

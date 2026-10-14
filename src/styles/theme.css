@@ -188,6 +188,13 @@
    * twice the hairline's alpha on each ground. */
   --color-outline-dark: rgb(255 255 255 / 0.36);
   --color-outline-paper: rgb(20 24 32 / 0.32);
+  /* The frosted card's glass and its softer frame (ui/card.tsx `frosted`,
+   * the business pages' outlined cards, 2026-10-14). The glass is white at
+   * 0.6 over the dot grid, and blurs it — see --blur-frosted-card. The frame
+   * is the paper outline at under half its alpha: a frosted edge is drawn by
+   * the shadow, not by the line. */
+  --color-surface-frosted: rgb(255 255 255 / 0.6);
+  --color-outline-frosted: rgb(20 24 32 / 0.14);
   --color-hairline-paper-soft: rgb(20 24 32 / 0.2);
 
   /* A rule drawn over a photograph rather than over a flat ground — the
@@ -1047,6 +1054,13 @@
   --radius-none: 0; /* goals cards, CTA buttons — square by design */
 
   --shadow-card-hover: 0 22px 44px rgb(20 24 32 / 0.14);
+  /* The frosted card's elevation: a tight contact shadow, a mid one and a deep
+   * soft one, layered so the card lifts off the dot grid rather than sitting
+   * in a single halo, and a 1px white inset along its top edge — the light
+   * catching the glass. */
+  --shadow-frosted-card:
+    0 1px 2px rgb(20 24 32 / 0.06), 0 8px 16px rgb(20 24 32 / 0.08),
+    0 24px 48px rgb(20 24 32 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.6);
   /* A map tooltip, which floats over a dark section and needs to lift off it. */
   --shadow-tooltip: 0 8px 24px rgb(0 0 0 / 0.35);
   /* The social FAB's white discs and their names, in the brand's colours
@@ -1092,6 +1106,8 @@
    * ------------------------------------------------------------------ */
   --blur-header: 22px;
   --blur-mega: 30px;
+  /* The frosted card — enough to dissolve the 13px dot grid behind the copy. */
+  --blur-frosted-card: 12px;
 
   /* ---------------------------------------------------------------------
    * Breakpoints — docs/responsive-strategy.md §2
@@ -2365,6 +2381,8 @@
   /* Paired with --blur-header / --blur-mega; the design saturates both panes
    * by the same amount, so one token serves both. */
   --saturate-glass: 1.4;
+  /* The frosted card's, which lifts the colour of whatever the glass blurs. */
+  --saturate-frosted-card: 1.6;
 
   /* The solid square at the centre of a map pin: its width, as a percentage
    * of the map's width. Its height follows at 1:1. So the pin scales with the

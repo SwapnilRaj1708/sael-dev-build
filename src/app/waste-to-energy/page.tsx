@@ -109,6 +109,7 @@ export default function WasteToEnergyPage() {
         // screen the page snaps to.
         columns="thirds"
         ground="paper"
+        frosted
         snap
       />
     </div>

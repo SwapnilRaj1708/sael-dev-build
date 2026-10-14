@@ -80,6 +80,13 @@ export interface ValueGridProps {
    */
   balance?: boolean;
   /**
+   * Draw each `outlined` card as frosted glass — see `<Card frosted>`. For
+   * the business pages' paper sections, where the dot grid shows through
+   * behind the copy (2026-10-14). Does nothing on the dark ground or for the
+   * `hairline` variant.
+   */
+  frosted?: boolean;
+  /**
    * `dark` is the site's default and needs no instruction
    * (docs/design-guidelines.md §8). `paper` is for a page that alternates its
    * grounds deliberately, and picks the ramps and inks to match. The marks
@@ -257,10 +264,15 @@ export function ValueGridLayout({
   accent = false,
   variant = 'hairline',
   balance = false,
+  frosted = false,
   ground = 'dark',
 }: ValueGridLayoutProps) {
   const outlined = variant === 'outlined';
   const tone = GROUND[ground];
+  // Frosted glass is drawn on outlined cards on paper and nowhere else — the
+  // same condition `<Card>`'s compounds apply, held here so the grid's reveal
+  // below can follow it.
+  const glass = frosted && outlined && ground === 'paper';
 
   return (
     <div className="flex w-full flex-col gap-flow">
@@ -278,7 +290,17 @@ export function ValueGridLayout({
         </Reveal>
       </div>
 
-      <Reveal order={2}>
+      <Reveal
+        order={2}
+        // `<Reveal>` keeps `will-change: opacity, transform` on its box for good,
+        // and an ancestor with `will-change: opacity` is a *backdrop root*: the
+        // cards' `backdrop-filter` then sees only what is inside the root, not
+        // the dot grid behind it, and blurs nothing. Measured on a production
+        // build, 2026-10-14: the dots stayed fully visible through a frosted
+        // card, and vanished with this hint off. Frosted grids go without it;
+        // the fade-in is unchanged, and the blur arrives as it settles.
+        className={cn(glass && 'will-change-auto!')}
+      >
         <div
           className={cn(
             'gap-x-gap-grid gap-y-flow',
@@ -291,6 +313,7 @@ export function ValueGridLayout({
               as="article"
               ground={ground}
               shape={variant}
+              frosted={glass}
               inset={outlined ? 'none' : 'top'}
               accentClassName={accent && !outlined ? tone.accent : undefined}
               className={cn(

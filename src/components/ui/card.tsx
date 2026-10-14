@@ -77,6 +77,15 @@ const card = cva('group relative flex w-full', {
       dark: 'border-hairline-dark',
     },
     /**
+     * Frosted glass: a translucent white face that blurs the dot grid behind
+     * it, a softer frame and a layered shadow. For the business pages'
+     * outlined cards, to keep their copy clear of the dots (2026-10-14).
+     * **`outlined` on paper only** — the glass is white, which is wrong on
+     * the dark ground, and a hairline card has no face to frost. The
+     * compounds below are what enforce that: elsewhere this does nothing.
+     */
+    frosted: { true: '', false: '' },
+    /**
      * `top` insets below the hairline only, for a card whose own last element
      * closes it. `block` insets both edges, for a row in a stack of rows.
      */
@@ -90,9 +99,18 @@ const card = cva('group relative flex w-full', {
   compoundVariants: [
     // The box needs a stronger line than a lone hairline — see --color-outline-*.
     { shape: 'outlined', ground: 'dark', className: 'border-outline-dark' },
-    { shape: 'outlined', ground: 'paper', className: 'border-outline-paper' },
+    { shape: 'outlined', ground: 'paper', frosted: false, className: 'border-outline-paper' },
+    {
+      shape: 'outlined',
+      ground: 'paper',
+      frosted: true,
+      className: [
+        'border-outline-frosted bg-surface-frosted shadow-frosted-card',
+        'backdrop-blur-frosted-card backdrop-saturate-(--saturate-frosted-card)',
+      ],
+    },
   ],
-  defaultVariants: { ground: 'paper', inset: 'top', shape: 'hairline' },
+  defaultVariants: { ground: 'paper', inset: 'top', shape: 'hairline', frosted: false },
 });
 
 export type CardHoverEffect = 'gradient' | 'dotted-glow';
@@ -124,6 +142,7 @@ export function Card({
   ground,
   inset,
   shape,
+  frosted = false,
   accentClassName,
   hoverEffect,
   hoverIntensity,
@@ -138,7 +157,11 @@ export function Card({
 
   return (
     <Element
-      className={cn(card({ ground, inset, shape }), effect !== false && 'isolate', className)}
+      className={cn(
+        card({ ground, inset, shape, frosted }),
+        effect !== false && 'isolate',
+        className,
+      )}
       {...props}
     >
       {effect === 'gradient' && <BackgroundGradient ground={tone} intensity={hoverIntensity} />}
