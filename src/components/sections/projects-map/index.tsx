@@ -20,6 +20,8 @@ export interface ProjectsMapFigure {
   value: string;
   /** The caption under it — "Portfolio". */
   label: string;
+  /** A qualifier under the caption, set smaller and softer — "(under development)". */
+  note?: string;
 }
 
 export interface ProjectsMapProps {
@@ -149,6 +151,9 @@ export function ProjectsMap({
                   )}
                 </p>
                 <p className="text-h3 text-white">{figure.label}</p>
+                {figure.note !== undefined && (
+                  <p className="text-body-sm text-on-dark-soft">{figure.note}</p>
+                )}
               </Reveal>
             )}
           </div>

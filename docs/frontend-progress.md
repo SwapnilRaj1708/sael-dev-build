@@ -33,31 +33,41 @@ Legend: `Reads` = the supporting docs to load for that item (beyond `/CLAUDE.md`
 | FE-02 | Design system foundation (tokens, fonts, primitives) | `features/02-design-system-foundation.md` | Swapnil Raj | 2026-08-04 |
 | FE-01 | Initial project setup | `features/01-initial-project-setup.md` | Swapnil Raj | 2026-08-04 |
 
-### Business Portfolio: the mark centred from `md` to `xl` (not a tracker item), 2026-10-14
+### Business Portfolio: the mark centred in the room right of the text (not a tracker item), 2026-10-14
 
-At the client's request, the mark in each Business Portfolio row stands centred in the room to
-the right of the text, from `md` (768) up to `xl` (1280). Below `md` and from `xl` up nothing
-changed. **Done on the user's instruction**; FE-05 stays In Progress.
+At the client's request, from `md` (768) up the mark in each Business Portfolio row stands
+centred in the room to the right of the description, not hung off the row's edge. Below `md`
+nothing changed. **Done on the user's instruction**; FE-05 stays In Progress.
 
-**How.** The text column is `flex-1`, so any wider right padding would narrow it and re-wrap
-the copy, which the client ruled out. From `md` to `xl` the row's gap and right padding are
-instead folded into the mark's own margin, half to each side: `(gap + padding) / 2`, as the new
-tokens `--spacing-ledger-mark-pad-md` and `-lg` (the padding is `--spacing-inset` at `md` and
-`--spacing-ledger-pad-r` at `lg`, so there are two). The text column is exactly as wide as
-before. `--spacing-ledger-pad-r` now applies from `xl`, not `lg`.
+**How.** The text column was `flex-1`, so its box always spanned the row and the mark sat at the
+far right. From `md` it is `flex-initial`: as wide as its content, which is the description's own
+`--ledger-measure` box (46ch) and so the same for every row, and no wider. The mark moves into a
+zone that takes all the width the text does not, and centres the mark in it. The zone's floor is
+the mark, the gap and the right padding the row had before, as `--spacing-ledger-mark-zone-md` and
+`-lg` (the padding is `--spacing-inset` below `lg`, `--spacing-ledger-pad-r` from it). So where the
+text has no slack its column is exactly as wide as it was. The row's gap and right padding are 0
+from `md`, because the zone counts them.
 
-**The shift is small, by geometry, not by mistake.** The mark moves left about 5–8px (e.g.
-339.8 → 334.5px at 1024), and sits with equal space either side. At these widths the text fills
-nearly the whole row, so the room right of it is only the gap, the mark and the padding, about
-100–150px. A 90px right padding would have narrowed the text column by about 65px at 1024.
-The client's own 90px trial in `theme.css` was replaced by this, and `--spacing-ledger-pad-r`
-is back to `calc(var(--spacing-flow) * 0.7)`. From `xl` the text has real slack (46ch measure
-in a wider column), where centring would move the mark further; that was not asked for.
+**What it does by width.** Text, line counts and row heights are unchanged at every width. The
+mark moves left about 5–7px from 768 to 1280, because there the description fills the row and the
+room right of it is only gap + mark + padding. It moves about 24px at 1440 and 80–92px at 1920,
+where the 46ch box leaves real room (L = R: 127px each side at 1920). The client's own 90px trial
+in `theme.css` is replaced by this; `--spacing-ledger-pad-r` is back to
+`calc(var(--spacing-flow) * 0.7)`.
 
-**Verified** on a production build: the text column's width is unchanged at 768, 900, 1023, 1024,
-1180 and 1279, and 1280, 1440 and 1920 match the old geometry to the pixel; the space left of the
-mark equals the space right of it at every width from 768 to 1279. `typecheck`, `lint`,
-`verify:guardrails` and `build` are clean.
+**"md and lg" is read as the code's own `md:` and `lg:` rules are:** min-width, with no upper cap.
+An earlier pass of the same day closed the range at `xl` and changed almost nothing, as the text
+has no slack below it. To cap it, add `max-xl:` to the zone and column classes, and `xl:` to the
+gap and padding that return.
+
+**One side effect.** The upcoming (Solar Cell) row's panel indents its copy by `--spacing-inset`, so
+its mark centres in room that starts that much further right: about 11–12px right of Agri's
+below it, at 1440 and above. Below 1280 the two line up, as before.
+
+**Verified** on a production build at 360, 480, 600, 767, 768, 900, 1024, 1180, 1279, 1280, 1440,
+1920, comparing the old layout (emulated in the page) with the new, card by card: no re-wrap, no
+height change, no horizontal scroll up to 2560. `typecheck`, `lint`, `verify:guardrails` and
+`build` are clean.
 
 ### Frosted cards on three business sections (not a tracker item), 2026-10-14
 

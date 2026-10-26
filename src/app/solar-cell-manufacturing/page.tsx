@@ -67,6 +67,7 @@ export default function SolarCellManufacturingPage() {
         eyebrow={solarCellProjects.eyebrow}
         title={solarCellProjects.title}
         body={[...solarCellProjects.body]}
+        figure={solarCellProjects.figure}
         map={solarCellProjects.map}
         mapLabel={solarCellProjects.mapLabel}
         sites={solarCellSites}

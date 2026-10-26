@@ -49,7 +49,7 @@ export const esgMetricsHero: Omit<EsgHeroProps, 'snap'> = {
   eyebrow: 'Sustainability',
   title: 'Our Key ESG Metrics',
   intro:
-    'SAEL dutifully focuses on ESG (Environmental, Social, and Governance) metrics, prioritizing sustainability.',
+    'SAEL dutifully focuses on ESG (Environmental, Social, and Governance) metrics, prioritizing sustainability',
 };
 
 export const sdgCommitments: Omit<SdgGridProps, 'snap'> = {

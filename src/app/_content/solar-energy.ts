@@ -111,20 +111,20 @@ export const solarEnergyHero: PageHeroProps = {
 
 export const solarOverview: ProseSplitProps = {
   eyebrow: 'Overview',
-  title: 'Solar Power Generation',
+  title: 'About Solar Energy Generation',
   body: [
     'At SAEL, we are spearheading the energy transition by engineering projects that harness the Sun. Our engineering prowess enables us to tailor solutions that strike a harmonious balance between innovation and practicality.',
     'Each project commences with a meticulous analysis encompassing technology, land suitability, solar irradiation, and existing grid infrastructure. We also consider factors such as geographical location, climate conditions affecting equipment, local amenities, and potential maintenance requirements. This comprehensive approach ensures that all our capital investment endeavours are undertaken with thorough risk assessment and meticulous planning.',
   ],
   media: {
-    // 6.2 MB at source; next/image serves derived sizes, never the original.
-    image: solarAsset('mask1Image.jpg', 2730, 1529),
+    // Arrives already cut to its shape; next/image serves derived sizes.
+    image: solarAsset('mask1Image.webp', 2418, 1890),
     // The live page's slot carries no alt. Written from the photograph,
     // which shows what is described and nothing more.
-    alt: 'Aerial view of rows of solar panels stretching across flat farmland to the horizon',
+    alt: 'Rows of solar panels spread across green hillsides under a blue sky',
     orientation: 'landscape',
     frame: 'aspect-(--aspect-solar-overview) max-w-(--business-overview-media-w)',
-    mask: 'mask-(--mask-solar-overview)',
+    intrinsic: true,
     sizes: SIZES_BUSINESS_OVERVIEW_MEDIA,
   },
 };
@@ -243,7 +243,11 @@ export const solarProjects: Omit<ProjectsMapProps, 'sites'> = {
     "Today, the company is catering to the electricity needs of energy deficient India and has been successful in setting up large scale solar power projects across states like Rajasthan, Gujarat, Andhra Pradesh, Uttar Pradesh, Maharashtra, Punjab, Mizoram, and Karnataka contributing substantially to the national grid and supporting India's renewable energy targets.",
   ],
   // The homepage ledger's figure. See the note at the top of this file.
-  figure: { value: '8.3 GWp', label: 'Portfolio' },
+  figure: {
+    value: '8.3 GWp',
+    label: 'Solar Energy Generation Capacity',
+    note: '(contracted and awarded)',
+  },
   map: { image: dottedMap },
   mapLabel: 'Map of SAEL solar project sites across India',
 };
@@ -271,9 +275,9 @@ export const solarCapabilities: {
     },
   ],
   media: {
-    image: solarAsset('mask2Image.webp', 800, 938),
+    image: solarAsset('mask2Image.webp', 2332, 2299),
     // The live page's slot carries no alt. Written from the photograph.
-    alt: 'Two people at a control desk watching a wall of plant monitoring dashboards',
+    alt: 'Two people in front of a wall of screens showing satellite weather imagery',
   },
 };
 

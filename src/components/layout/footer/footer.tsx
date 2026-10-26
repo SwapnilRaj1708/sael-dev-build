@@ -4,9 +4,8 @@ import logoDark from '@/assets/images/sael-logo-dark.svg';
 import { FooterLinks } from '@/components/layout/footer/footer-links';
 import { FooterPixelStrip } from '@/components/sections/footer-pixel-strip';
 import { Container } from '@/components/ui/container';
-import { SocialLinks } from '@/components/ui/social-links';
 import { siteConfig, TODO_CONTENT } from '@/lib/config/site';
-import { LEGAL_LINKS, SOCIAL_LINKS } from '@/lib/content/static/footer';
+import { LEGAL_LINKS } from '@/lib/content/static/footer';
 
 /**
  * The site footer. A Server Component; only the accordions inside
@@ -141,8 +140,6 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-
-            <SocialLinks links={SOCIAL_LINKS} newTabNote="opens in a new tab" />
           </div>
         </div>
       </Container>

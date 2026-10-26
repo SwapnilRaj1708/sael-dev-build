@@ -112,21 +112,21 @@ export const wasteToEnergyHero: PageHeroProps = {
 
 export const wasteToEnergyOverview: ProseSplitProps = {
   eyebrow: 'Overview',
-  title: 'Waste-To-Energy Generation',
+  title: 'Agri Waste-to-Energy',
   body: [
     "SAEL's inception was rooted in a commitment to address the twin challenges of pollution and the growing energy needs of India. The pursuit of sustainable energy solutions has spurred exploration into innovative initiatives like Waste-to-Energy (WTE) projects. These projects present a promising solution, leveraging the consistent availability of paddy straw.",
     "SAEL has pioneered innovative solutions to address India's paddy straw generation and pollution challenges. By harnessing agricultural waste as a reliable resource, SAEL not only mitigates pollution on a significant scale but also offers a novel approach to overcoming the intermittent issues in the current renewable energy landscape.",
     'Our strategic objectives are bolstered by our dedication to advancing cutting-edge technologies, particularly in Waste-to-Energy projects. Through targeted efforts to embed sustainable practices across our operations, we are steadfastly committed to realising a future where sustainable energy is accessible to every household in India.',
   ],
   media: {
-    image: wteAsset('mask1Image.jpg', 505, 505),
+    image: wteAsset('mask1Image.webp', 1878, 2167),
     // The live page's slot carries no alt. Written from the photograph
     // itself, which describes what is visible and asserts nothing about
     // which plant it is.
-    alt: 'Aerial view of a waste-to-energy plant, its blue-roofed turbine hall, cooling tower and chimney stack standing among harvested fields',
+    alt: 'A waste-to-energy plant, its blue-clad buildings and striped chimney stack reflected in the water in front of it',
     orientation: 'landscape',
     frame: 'aspect-(--aspect-solar-overview) max-w-(--business-overview-media-w)',
-    mask: 'mask-(--mask-solar-overview)',
+    intrinsic: true,
     sizes: SIZES_BUSINESS_OVERVIEW_MEDIA,
   },
 };
@@ -168,7 +168,7 @@ export const wasteToEnergyProjects: Omit<ProjectsMapProps, 'sites'> = {
   body: [
     'SAEL has made significant strides in the Waste-to-Energy (WTE) sector, focusing on converting agricultural waste into valuable energy resources. SAEL is the largest Agri WTE operator in India based on the operational capacity (CRISIL). By implementing advanced technologies and innovative processes, SAEL is transforming organic waste into renewable energy, thus contributing to a sustainable and environmentally friendly energy landscape.',
   ],
-  figure: { value: '164.9 MW', label: 'Waste-To-Energy Portfolio' },
+  figure: { value: '164.9 MW', label: 'Waste-to-Energy Capacity' },
   map: { image: dottedMap },
   mapLabel: 'Map of SAEL waste-to-energy plants across India',
   business: 'agri-waste',
@@ -201,9 +201,9 @@ export const wasteToEnergyTechnology: {
     },
   ],
   media: {
-    image: wteAsset('mask2Image.webp', 700, 818),
+    image: wteAsset('mask2Image.webp', 2419, 1889),
     // The live page's slot carries no alt. Written from the photograph.
-    alt: 'Green process vessels and pipework standing beside the louvred cooling tower of a waste-to-energy plant',
+    alt: 'Straw heaped on a conveyor running through a covered steel gallery',
   },
 };
 

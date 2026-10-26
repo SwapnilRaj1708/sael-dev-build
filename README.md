@@ -100,6 +100,99 @@ host is therefore a rebuild.** The value must then be exactly `https://www.sael.
 origin, every page is marked `noindex` (`src/lib/config/site.ts`). See the backend's cutover
 checklist §1.11.
 
+### Deploying a release to the VM
+
+[`deploy/sael-web-deploy.sh`](deploy/sael-web-deploy.sh) performs the whole upgrade in one
+command. It checks the archive's SHA-256 and extracts it into `/var/www/sael-web.new`. It sets
+ownership to `saelapp` and links `.next/cache/images` to `/var/lib/sael-web/cache/images`, so
+converted images survive the deploy. It then swaps the release in, keeping the old one as
+`/var/www/sael-web.prev`, and polls `/api/health/` for up to 60 s. **An unhealthy start is rolled
+back automatically**: the new release moves to `/var/www/sael-web.failed-<timestamp>`, the previous
+one is restored and restarted, and the command exits non-zero. After a healthy start it runs the
+image warm-up (below). A failed warm-up is only a warning. The script removes nothing but
+`sael-web.new`, `sael-web.prev` and `sael-web.failed-*`, and never deletes anything under
+`/var/lib`, nor touches nginx or the backend.
+
+Every run starts by printing its target, one line:
+`target: unit=sael-web folder=/var/www/sael-web user=saelapp:saelapp base=http://127.0.0.1:3000 cache=/var/lib/sael-web/cache/images`.
+Check it before anything else scrolls past.
+
+**One-time install** on the VM. The archive carries the script, so take it from the first archive
+that has it:
+
+```bash
+tar -xzOf ~/sael-web-<sha>.tar.gz sael-web-0.1.0/deploy/sael-web-deploy.sh > ~/sael-web-deploy
+sudo install -m 0755 -o root -g root ~/sael-web-deploy /usr/local/bin/sael-web-deploy
+rm ~/sael-web-deploy
+```
+
+Repeat it when a release changes `deploy/sael-web-deploy.sh`. The top folder is
+`sael-web-<version>/`, after `package.json`'s version.
+
+**Each deploy.** On the Mac, hash the archive and copy it over:
+
+```bash
+shasum -a 256 release/sael-web-0.1.0.tar.gz
+scp release/sael-web-0.1.0.tar.gz <vm>:~/sael-web-<sha>.tar.gz
+```
+
+Then, on the VM, pass the hash so a corrupted copy is refused before anything changes:
+
+```bash
+sudo sael-web-deploy ~/sael-web-<sha>.tar.gz <sha256 from the Mac>
+```
+
+**Rollback** to the release before the last deploy. It moves the current release to
+`sael-web.failed-<timestamp>` and checks health. It works once per deploy, because there is only
+one `.prev`:
+
+```bash
+sudo sael-web-deploy --rollback
+```
+
+**UAT** runs on the same VM as its own copy of the site: unit `sael-web-uat`, folder
+`/var/www/sael-web-uat`, account `saeluat`, port 3001, image cache
+`/var/lib/sael-web-uat/cache/images`. The same script deploys it when `sudo env` passes it five
+variables. `SAEL_DEPLOY_SERVICE` names the unit, and the release folders follow it
+(`sael-web-uat.new`, `.prev`, `.failed-*`). Each command is one line; do not split it:
+
+```bash
+sudo env SAEL_DEPLOY_SERVICE=sael-web-uat SAEL_DEPLOY_BASE_URL=http://127.0.0.1:3001 SAEL_DEPLOY_USER=saeluat SAEL_DEPLOY_GROUP=saeluat SAEL_DEPLOY_IMAGE_CACHE=/var/lib/sael-web-uat/cache/images sael-web-deploy ~/sael-web-<sha>.tar.gz <sha256 from the Mac>
+```
+
+```bash
+sudo env SAEL_DEPLOY_SERVICE=sael-web-uat SAEL_DEPLOY_BASE_URL=http://127.0.0.1:3001 SAEL_DEPLOY_USER=saeluat SAEL_DEPLOY_GROUP=saeluat SAEL_DEPLOY_IMAGE_CACHE=/var/lib/sael-web-uat/cache/images sael-web-deploy --rollback
+```
+
+Production is the default for every one of those values, so the script refuses, before it
+changes anything:
+
+- a run for any unit but `sael-web` that does not set all four of the base URL, user, group and
+  image cache, or that sets any of them to production's (port 3000, `saelapp`, anything under
+  `/var/lib/sael-web/`);
+- a production run that carries a UAT value (port 3001, `saeluat`, a cache path containing
+  `sael-web-uat`);
+- a unit with no unit file (`systemctl cat <unit>.service` fails).
+
+A UAT build is made like any other, with UAT's own `NEXT_PUBLIC_SITE_URL`. Being any origin but
+`PRODUCTION_URL`, it is `noindex` and serves a `robots.txt` that disallows everything.
+
+**The image warm-up alone.** [`scripts/warmup.mjs`](scripts/warmup.mjs) requests every page in the
+sitemap, then every `/_next/image/` URL those pages use, as AVIF and as WebP, two at a time. sharp
+converts them then, not on a visitor's request. It runs as root or as `saelapp`, talks only to
+the local server (`127.0.0.1:3000`, or `--base http://127.0.0.1:3001` for UAT), and ends with one
+line:
+`warmup: pages=N images=N variants=N cold=N warm=N failures=N duration=Ns`.
+
+```bash
+sudo node /var/www/sael-web/scripts/warmup.mjs             # or: sudo -u saelapp node …
+sudo node /var/www/sael-web/scripts/warmup.mjs --dry-run   # list what it would warm
+```
+
+`--concurrency` (default 2, at most 4) sets how many images convert at once. Each large image costs
+up to about 40% of the VM's CPU while it converts. Run it after
+`sael-web-refresh-blob-images` too, which leaves replaced Blob images cold.
+
 ## Branching
 
 ```

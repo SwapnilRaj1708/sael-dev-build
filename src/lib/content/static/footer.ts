@@ -39,7 +39,7 @@ export const FOOTER_GROUPS: readonly FooterGroup[] = [
       { label: 'Our Team', href: '/our-team/' },
       { label: 'Contact Us', href: '/contact-us/' },
       { label: 'Newsroom', href: '/newsroom/' },
-      { label: 'Career', href: '/career/', external: true },
+      { label: 'Careers', href: '/career/', external: true },
     ],
   },
   {
