@@ -161,6 +161,12 @@ Desktop positions per slide are in the prototype's `defaultHeroSlides()` — car
 
 **Reduced motion:** no Ken Burns, no word stagger, no letterbox, no parallax, no autoplay. Dots become plain navigation. The carousel still works — it just does not move on its own.
 
+> **2026-10-27: the slides are reordered, and the last two are clips.** The order is now "Look towards a future of Unlimited Solar Energy", "Energy Independence, courtesy the Sun", "Not Block, We Unlock the power of the sun", "Not pollution, but a charged Solution" — the former second, third, first and fourth, each moved whole (photograph, mark, headline, highlight ramp). The table above is the prototype's and was already not the shipped order or copy; the order lives in `heroSlides`, `src/app/_content/homepage.ts`.
+>
+> Slides 3 and 4 carry a `video`, `{ desktop, mobile }` — the client's two cuts of each, `src/assets/images/hero/hero-slide-{3-glasses-girl,4-masked-boy}-{desktop,mobile}.mp4` — drawn by `<HeroVideo>` (`hero-carousel/hero-video.tsx`) over the slide's photographs, inside the same parallax wrapper. The cut follows the photographs' own `lg` divide, and only that one is fetched. Each clip is 6s, the length of the dwell, and it plays **once** from the top whenever its slide comes round, then is held on its last frame: the last frame is unlike the first, so a loop would cut back in plain view whenever the slide is held (keyboard focus holds it). It stops when the hero scrolls out of view and restarts from the top when the hero returns, which is when the carousel re-arms its dwell. It buffers once the slide before it is on screen, not at page load. Neither slide takes Ken Burns, which would jump when the clip took over from a zoomed photograph.
+>
+> **The photographs under the clips are each cut's first frame** (`…-poster.jpg`, taken from the file at its native size). That is what shows until the clip is playing, what shows if the browser will not autoplay, and **all that a visitor who prefers reduced motion gets: the `<video>` never mounts.** They are not the stills the slides used before (`hero-copy-2-1.png`, `hero-copy-2-2.png`, `hero-image-mobile-1.jpg`, `-4.jpg`, no longer imported anywhere): the glasses clip opens on a different pose from its old still, which would otherwise jump as the clip started. Their `alt` is still `{{TODO: content}}`, like every hero photograph's. See `asset-inventory.md` §3 and §4 for how a clip is imported and what these files are.
+
 ---
 
 ## 2. `<StatsBand>` — `sections/stats-band/`

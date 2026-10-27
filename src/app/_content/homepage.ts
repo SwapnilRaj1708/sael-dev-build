@@ -4,14 +4,18 @@ import iconModuleManufacturing from '@/assets/images/business/icon-solar-module.
 import iconSolarGeneration from '@/assets/images/business/icon-solar-energy.png';
 import aboutCutout from '@/assets/images/aboutSael/sardar-kid-cropped.png';
 import aboutPhoto from '@/assets/images/aboutSael/burning-crop.png';
-import heroImageMobile1 from '@/assets/images/hero/hero-image-mobile-1.jpg';
 import heroImageMobile2 from '@/assets/images/hero/hero-image-mobile-2.jpg';
 import heroImageMobile3 from '@/assets/images/hero/hero-image-mobile-3.jpg';
-import heroImageMobile4 from '@/assets/images/hero/hero-image-mobile-4.jpg';
-import heroImage1 from '@/assets/images/hero/hero-copy-2-1.png';
-import heroImage2 from '@/assets/images/hero/hero-copy-2-2.png';
 import heroImage3 from '@/assets/images/hero/hero-copy-2-3.png';
 import heroImage4 from '@/assets/images/hero/hero-copy-2-4.png';
+import heroGlassesPoster from '@/assets/images/hero/hero-slide-3-glasses-girl-desktop-poster.jpg';
+import heroGlassesPosterMobile from '@/assets/images/hero/hero-slide-3-glasses-girl-mobile-poster.jpg';
+import heroGlassesVideo from '@/assets/images/hero/hero-slide-3-glasses-girl-desktop.mp4';
+import heroGlassesVideoMobile from '@/assets/images/hero/hero-slide-3-glasses-girl-mobile.mp4';
+import heroMaskPoster from '@/assets/images/hero/hero-slide-4-masked-boy-desktop-poster.jpg';
+import heroMaskPosterMobile from '@/assets/images/hero/hero-slide-4-masked-boy-mobile-poster.jpg';
+import heroMaskVideo from '@/assets/images/hero/hero-slide-4-masked-boy-desktop.mp4';
+import heroMaskVideoMobile from '@/assets/images/hero/hero-slide-4-masked-boy-mobile.mp4';
 import solBhadra from '@/assets/images/solutions/sol-bhadra.jpg';
 import solKishangarh from '@/assets/images/solutions/sol-kishangarh.jpg';
 import solMizoram from '@/assets/images/solutions/sol-mizoram.jpg';
@@ -69,36 +73,36 @@ import { TODO_CONTENT } from '@/lib/config/site';
  * The progress bar no longer takes a ramp per slide: it fills once across the
  * whole cycle from one gradient. See `<HeroProgress>`.
  *
+ * **The order is the client's of 2026-10-27.** What were the second and third
+ * slides now open the cycle, the sun slide that opened it follows them, and
+ * agri waste stays last. Each slide moved whole: photograph, mark, headline
+ * and highlight. The highlight ramps went with their headlines because they
+ * are keyed to each headline's subject, not to a position: `-word-1` is the
+ * sun's yellow to red, `-word-4` agri waste's green.
+ *
+ * **The last two slides are clips, since the same day**: the glasses catching
+ * the sun, and the mask coming away. Each is a 6s single shot that plays once
+ * per visit; see `<HeroVideo>`. Their `image` is no longer the photograph they
+ * replaced (`hero-copy-2-1.png` and `hero-copy-2-2.png`, with the mobile
+ * `hero-image-mobile-1.jpg` and `-4.jpg`). It is each cut's first frame, taken
+ * from the file itself, so the hand-over from still to clip does not jump and
+ * a reduced-motion visitor sees the shot the clip opens on.
+ *
  * Still outstanding, and each renders through `<MediaFrame>`'s pending state
  * until it lands (docs/asset-inventory.md §9):
  *
  *  - the four art-directed **portrait crops** for below `lg`. Until they
  *    arrive the landscape master stands in — see the note in hero-backdrop.tsx.
+ *    The clips' mobile cuts are landscape too, framed on a centred subject.
  *  - `alt` text for every photograph
  */
 export const heroSlides: HeroSlide[] = [
-  {
-    id: 'solar-modules',
-    image: {
-      desktop: heroImage1,
-      mobile: heroImageMobile1,
-      // Describes the scene, not the brand. docs/design-guidelines.md §6.
-      alt: TODO_CONTENT,
-    },
-    symbol: {
-      image: iconSolarGeneration,
-      pending: 'icons/symbol-solar-generation',
-      label: ['Solar Energy', 'Generation'],
-    },
-    headline: 'Not Block,\nWe Unlock the power of the sun',
-    highlight: 'Block,\nWe Unlock',
-    highlightClassName: 'bg-(image:--gradient-hero-word-1)',
-  },
   {
     id: 'energy-generation',
     image: {
       desktop: heroImage4,
       mobile: heroImageMobile2,
+      // Describes the scene, not the brand. docs/design-guidelines.md §6.
       alt: TODO_CONTENT,
     },
     symbol: {
@@ -123,8 +127,23 @@ export const heroSlides: HeroSlide[] = [
     highlightClassName: 'bg-(image:--gradient-hero-word-3)',
   },
   {
+    id: 'solar-modules',
+    // The first frame of each cut, under it. See the note above.
+    image: { desktop: heroGlassesPoster, mobile: heroGlassesPosterMobile, alt: TODO_CONTENT },
+    video: { desktop: heroGlassesVideo, mobile: heroGlassesVideoMobile },
+    symbol: {
+      image: iconSolarGeneration,
+      pending: 'icons/symbol-solar-generation',
+      label: ['Solar Energy', 'Generation'],
+    },
+    headline: 'Not Block,\nWe Unlock the power of the sun',
+    highlight: 'Block,\nWe Unlock',
+    highlightClassName: 'bg-(image:--gradient-hero-word-1)',
+  },
+  {
     id: 'agri-waste',
-    image: { desktop: heroImage2, mobile: heroImageMobile4, alt: TODO_CONTENT },
+    image: { desktop: heroMaskPoster, mobile: heroMaskPosterMobile, alt: TODO_CONTENT },
+    video: { desktop: heroMaskVideo, mobile: heroMaskVideoMobile },
     symbol: {
       image: iconAgriWaste,
       pending: 'icons/symbol-agri-waste',

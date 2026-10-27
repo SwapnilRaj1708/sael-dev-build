@@ -169,6 +169,15 @@ const nextConfig: NextConfig = {
         loaders: ['@svgr/webpack'],
         as: '*.js',
       },
+      // Video, imported the way `next/image` artwork is: the import is the
+      // file's URL, and the file is emitted content-hashed under
+      // `/_next/static/media/`, where Next serves it with its immutable
+      // `Cache-Control` and answers byte-range requests, which iOS Safari
+      // needs before it will play a video. Only the homepage hero's clips use
+      // it. docs/asset-inventory.md §3. Types: src/types/video.d.ts.
+      '*.mp4': {
+        type: 'asset',
+      },
     },
   },
   async redirects() {

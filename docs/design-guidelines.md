@@ -1168,7 +1168,7 @@ All prototype animations, with their required mobile/reduced-motion behaviour.
 
 | Name | Spec | Where | `prefers-reduced-motion` |
 |---|---|---|---|
-| `saelKen` | `scale(1.04) → scale(1.12)`, 9s ease forwards | Hero image Ken Burns | **Disable** — hold at `scale(1)` |
+| `saelKen` | `scale(1.04) → scale(1.12)`, 9s ease forwards | Hero image Ken Burns. **Not applied to a slide that carries a clip** (slides 3 and 4 since 2026-10-27): the photograph under a clip is its first frame, and a zoomed one would jump when the clip took over at full frame | **Disable** — hold at `scale(1)` |
 | `fxWord` | `opacity 0→1`, `translateY(32px)→0`, `blur(9px)→0`, 700ms, stagger 55ms/word | Hero headline | **Disable** — render at rest |
 | `fxLetter` | `scaleY(1)→0`, 1s `cubic-bezier(.7,0,.2,1)` | Letterbox reveal panels on load | **Disable** — panels absent |
 | `fxFill` | `width 0→100%`, linear over the slide interval | Active carousel dot | **Disable** — dot shows static active state |
@@ -1176,6 +1176,7 @@ All prototype animations, with their required mobile/reduced-motion behaviour.
 | `dotPulse` | box-shadow pulse, 2.4s infinite | Timeline milestone dots — *not built* | **Disable** |
 | `sparkFlick` | opacity 0.85↔1, 900ms infinite | Timeline travelling spark — *not built* | **Disable** |
 | Hero parallax | `mousemove`-driven translate: image 10px | Hero. *Reduced in PR 2528 to the image only; `--hero-parallax-symbol` and `-text` are deprecated* | **Disable**; also inert on touch (no pointer) |
+| Hero clip | A 6s single shot (`<HeroVideo>`), played **once** from the top each time its slide comes round or the hero returns to view, then held on its last frame; fades in over `--duration-media-fade` once the browser reports it playing | The slides that carry a `video` — slides 3 and 4 since **2026-10-27** — over their first-frame photographs, inside the parallax wrapper. Not a loop: its last frame is unlike its first, and the slide can be held on screen (keyboard focus) | **Disable** — the `<video>` never mounts; the slide is its first frame, still |
 | Timeline path draw | `stroke-dashoffset` driven by scroll over a 220vh track | Vision section — *not built* | **Jump to complete state** |
 | `saelKenMedia` / `.anim-ken-burns-media` | `scale(1.16) → scale(1)`, 6s `ease-in-out` **infinite alternate** — a 12s round trip | The masked photograph in **About SAEL and Our Endeavour**. One animation, not one each: the two sections are the same construction, so sharing it is what keeps them from drifting apart. Ambient and endless, unlike the hero's one-shot — neither is tied to a slide that expires. Added **2026-09-01**, shared **2026-09-02** | **Disable** — hold at `scale(1)`. A loop has no end state to rest at, so the still state is the cycle's open framing rather than either extreme |
 | Footer accordion head rule | `scaleX(0→1)` from a left origin, `--duration-underline` `--ease-entrance`, driven by `group-aria-expanded:` on the trigger | The footer's four link columns **below `md` only**, where the headings are accordion triggers. Above `md` the same headings take a static `underline underline-offset-8` and this does not apply. Added **2026-09-03** | **Disable transition** — rule tracks the panel, present when open and absent when closed |

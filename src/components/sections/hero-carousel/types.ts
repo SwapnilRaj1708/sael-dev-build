@@ -37,6 +37,21 @@ export interface HeroSlide {
     objectClassName?: string;
   };
   /**
+   * A clip that plays over the photograph while the slide is on screen, once
+   * from the top on every visit. See `<HeroVideo>`.
+   *
+   * **The photograph must be the clip's own first frame**, one per cut. It is
+   * what shows until the clip is playing and what a reduced-motion visitor
+   * sees instead of it, so any other image would jump when playback starts.
+   *
+   * Art-directed like the photographs: `desktop` from `lg` up, `mobile` below
+   * it. Each is the file's URL, from an `.mp4` import (next.config.ts).
+   */
+  video?: {
+    desktop: string;
+    mobile: string;
+  };
+  /**
    * The slide's mark, stacked above the headline.
    *
    * Decorative at every size — the headline carries the meaning — so it is

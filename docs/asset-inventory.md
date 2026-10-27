@@ -58,6 +58,7 @@ Rules:
 - **The supplied icon set (`icons/<name>/animated|static/`) is files, not components.** SVGR's glob in `next.config.ts` matches only direct children of `icons/`, and these are fixed-colour, each declares `id="g"` for its gradient, and the animated ones run SMIL, so inlining two on one page would collide. They go to `next/image`, typed by the `*-animated.svg` declaration in `src/types/svg.d.ts`. Every `*-animated.svg` in use has been edited to loop: the original 1.5s draw, a 2s hold, `repeatCount="indefinite"` (3.5s in all, keyframes rescaled by 3/7). A fresh copy from the client does not loop until it gets the same edit. **The white variant is for the dark ground and the coloured no-tile variant for paper** (2026-10-14): a mark on a paper section takes `ground="paper"` and draws the no-tile file. The 34 no-tile files that change brought in (icons 4–36 and 39) were given the loop edit then, each checked against its white twin: with colours set aside, the two files are identical.
 - Photographic content is **never PNG**. PNG is for transparency and flat graphics only.
 - Every raster asset is committed at a single sensible master size; `next/image` derives the rest. Do not commit `@2x` variants.
+- **A video that ships with the build is imported like an image** (2026-10-27). An `.mp4` under `src/assets/` imports as its URL: `next.config.ts` gives `*.mp4` Turbopack's `asset` type (typed by `src/types/video.d.ts`), and the file is emitted content-hashed under `/_next/static/media/`, which Next serves itself with `Cache-Control: immutable` and byte-range support — iOS Safari will not play a video without ranges. `pnpm package` carries it with the rest of `.next/static`, and nginx needs nothing for it. **This is for a few small clips only**: the homepage hero's four total 6.5 MB, and a visitor fetches one pair. The business pages' hero videos are far larger and stay in Azure Blob Storage (§8). A clip's poster is its own first frame, taken from the file, so the still and the clip agree.
 
 ---
 
@@ -95,6 +96,17 @@ Rules:
 | `assets/hero-agri.jpg` | `hero/agri-waste.jpg` | ≤ 220KB @ 2400w | Slide 4 |
 
 **Each hero slide needs a portrait crop for mobile** (`hero/solar-modules-portrait.jpg` etc., 4:5, ≤ 140KB @ 1080w). Delivered via `<picture>` / `next/image` with a media-conditioned source. Scaling a 2.34:1 landscape into a 4:5 frame crops out the subject — this must be an art-directed crop, not a CSS `object-position` guess. **Client/design to supply the crops.**
+
+**Slides 3 and 4 are clips since 2026-10-27**, supplied by the client as two cuts each. All four are video-only H.264 at 30 fps, exactly 6.00s, with the moov atom first (so they start before they finish downloading). Each poster is frame 0 of its cut at the cut's own size, extracted from the file; they are 86–186 KB, inside the ≤ 220 KB hero target.
+
+| Slide | Clip (`hero/`) | Used | Pixels | Size | Poster (`hero/`) |
+|---|---|---|---|---|---|
+| 3 | `hero-slide-3-glasses-girl-desktop.mp4` | from `lg` | 2200 × 1176 | 2.91 MB | `…-desktop-poster.jpg` |
+| 3 | `hero-slide-3-glasses-girl-mobile.mp4` | below `lg` | 1538 × 1018 | 2.25 MB | `…-mobile-poster.jpg` |
+| 4 | `hero-slide-4-masked-boy-desktop.mp4` | from `lg` | 2200 × 1176 | 0.65 MB | `…-desktop-poster.jpg` |
+| 4 | `hero-slide-4-masked-boy-mobile.mp4` | below `lg` | 1844 × 1074 | 0.66 MB | `…-mobile-poster.jpg` |
+
+The mobile cuts are landscape (1.51 and 1.72, with the subject centred), the same ratios as the mobile stills they replace, so below `lg` they crop to a portrait frame exactly as those did — the portrait crops above are still owed. The stills they replace (`hero-copy-2-1.png`, `hero-copy-2-2.png`, `hero-image-mobile-1.jpg`, `hero-image-mobile-4.jpg`) are no longer imported and are left in place.
 
 ### Hero overlay icons — **used**
 

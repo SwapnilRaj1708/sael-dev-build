@@ -1,17 +1,27 @@
 import { MediaFrame } from '@/components/ui/media-frame';
 import { heroSlideSizes } from '@/lib/utils/image-sizes';
 import { cn } from '@/lib/utils/cn';
+import { HeroVideo } from './hero-video';
 import type { HeroSlide } from './types';
 
 export interface HeroBackdropProps {
   slide: HeroSlide;
   isActive: boolean;
+  /** Whether this slide is next in the cycle. A slide's clip buffers on it. */
+  isUpcoming: boolean;
   /** 1-based. Only the first slide is preloaded. */
   position: number;
 }
 
 /**
- * One slide's photograph and the scrims over it.
+ * One slide's photograph — and its clip, if it has one — and the scrims over
+ * it.
+ *
+ * **A slide with a `video` draws the clip over its photograph**, which is the
+ * clip's own first frame: the still shown until the clip plays, and instead of
+ * it for reduced motion. Such a slide takes no Ken Burns, because a photograph
+ * mid-zoom would jump when the clip takes over from it at full frame. The clip
+ * has its own movement. See `<HeroVideo>`.
  *
  * Purely decorative: the copy that changes with the slide is not in here. In
  * the earlier design each slide carried its own headline and mark, positioned
@@ -35,8 +45,9 @@ export interface HeroBackdropProps {
  *  - the **foot** scrim is on at every size and is only there so the progress
  *    bar along the section's base never lands on a bright patch of sky.
  */
-export function HeroBackdrop({ slide, isActive, position }: HeroBackdropProps) {
-  const { image } = slide;
+export function HeroBackdrop({ slide, isActive, isUpcoming, position }: HeroBackdropProps) {
+  const { image, video } = slide;
+  const kenBurns = isActive && video === undefined && 'anim-ken-burns';
 
   return (
     <div
@@ -60,6 +71,9 @@ export function HeroBackdrop({ slide, isActive, position }: HeroBackdropProps) {
         so moving the origin on the <img> alone would leave the subject's head
         being pushed out of frame by this element instead. See the note on the
         token.
+
+        A slide's clip sits inside this wrapper too, over the photographs, so it
+        takes the same overscale and parallax and lines up with its poster.
       */}
       <div
         className={cn(
@@ -88,7 +102,7 @@ export function HeroBackdrop({ slide, isActive, position }: HeroBackdropProps) {
           priority={position === 1}
           pending={`hero/${slide.id}-portrait`}
           className="absolute inset-0 lg:hidden"
-          imageClassName={cn(isActive && 'anim-ken-burns')}
+          imageClassName={cn(kenBurns)}
         />
         <MediaFrame
           image={image.desktop}
@@ -100,8 +114,19 @@ export function HeroBackdrop({ slide, isActive, position }: HeroBackdropProps) {
           // `objectClassName` shifts the crop on a slide whose subject would
           // otherwise sit under the headline. No slide sets it at present; see
           // the note on the type for why it stays.
-          imageClassName={cn(isActive && 'anim-ken-burns', image.objectClassName)}
+          imageClassName={cn(kenBurns, image.objectClassName)}
         />
+        {video !== undefined && (
+          <HeroVideo
+            desktop={video.desktop}
+            mobile={video.mobile}
+            isActive={isActive}
+            isUpcoming={isUpcoming}
+            // The same crop shift as the photograph it covers. It is `lg:`
+            // scoped by the caller, so it leaves the mobile cut alone.
+            className={image.objectClassName}
+          />
+        )}
       </div>
 
       <div

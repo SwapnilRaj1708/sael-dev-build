@@ -190,6 +190,7 @@ export function HeroCarousel({ slides, intervalMs = 6000 }: HeroCarouselProps) {
           key={slide.id}
           slide={slide}
           isActive={slideIndex === index}
+          isUpcoming={slideIndex === (index + 1) % slides.length}
           position={slideIndex + 1}
         />
       ))}
